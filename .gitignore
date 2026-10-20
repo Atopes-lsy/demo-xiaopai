@@ -1,0 +1,9 @@
+# 研究原始数据与映射（含个人信息，不入库）
+06-研究发现/coze-抽取测试记录.csv
+06-研究发现/coze测试数据/mapping.csv
+06-研究发现/coze测试数据/inbox/
+06-研究发现/coze测试数据/raw.csv
+06-研究发现/测试数据原始.csv
+
+__pycache__/
+*.pyc

@@ -1,0 +1,58 @@
+﻿probe,expect,run,latency_ms,events_cnt,raw
+P1,positive,1,34725,0,"{""events"":[{""title"":""常规通道作品提交"",""type"":""deadline"",""start_time"":null,""end_time\"":null,""
+       ,""deadline"":""2026-10-20 23:59"",""location"":null,""priority"":""P1"",""estimate_min"":null,""dependencies\"":[]"",""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""常规通道作品提交倒计时 3 天；提交截止 10 月 20 日 23:59"",""ambiguity"":""原文提及的倒计时3天与明确截止日期2026-10-20不一致，以明确日期为准""}],""needs_confirmation"":true,""notes"":""完整晋级名单公布时间为2026-11-07""}"
+P1,positive,2,34421,1,"{""events"":[{""title"":""常规通道作品提交"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-20 23:59"",""location"":null,""priority"":""P1"",""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""常规通道作品提交截止 10 月 20 日 23:59"",""ambiguity"":""倒计时3天与明确截止日期10月20日不一致，以明确日期为准""}],""needs_confirmation"":true,""notes"":""完整晋级名单公布时间为2026-11-07""}"
+P1,positive,3,27651,1,"{""events"": [{""title"": ""常规通道作品提交"", ""type"": ""deadline"", ""start_time"": null, ""end_time"": null, ""deadline"": ""2026-10-20 23:59"", ""location"": null, ""priority"": ""P1"", ""estimate_min"": null, ""dependencies"": [], ""confidence"": 0.9, ""missing_fields"": [""location""], ""evidence"": ""常规通道作品提交截止 10 月 20 日 23:59"", ""ambiguity"": ""倒计时3天与明确截止日期10月20日不一致，以明确日期为准""}], ""needs_confirmation"": true, ""notes"": ""完整晋级名单公布时间为2026年11月7日""}"
+P2,positive,1,33765,1,"{""events"":[{""title"":""完成教材预订"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-08-11 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""需要订购教材的同学请在 8 月 4 日至 8 月 11 日内完成预订操作"",""ambiguity"":""原文未给出具体时间，截止按2026-08-11 23:59处理，该截止日期已过期""}],""needs_confirmation"":true,""notes"":null}"
+P2,positive,2,29125,1,"{""events"":[{""title"":""订购教材"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-08-11 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""需要订购教材的同学请在 8 月 4 日至 8 月 11 日内完成预订操作"",""ambiguity"":""原文未给出具体截止时间，按2026-08-11 23:59处理，该事项已过期""}],""needs_confirmation"":true,""notes"":null}"
+P2,positive,3,45222,1,"{""events"":[{""title"":""订购教材"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-08-11 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""需要订购教材的同学请在 8 月 4 日至 8 月 11 日内完成预订操作"",""ambiguity"":""原文未给出具体截止时间，按8月11日23:59处理；截止日期已过期""}],""needs_confirmation"":true,""notes"":null}"
+P3,positive,1,10553,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""无可记录事项""}"
+P3,positive,2,38428,1,"{""events"":[{""title"":""完成比赛报名"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-24 23:59"",""location"":null,""priority"":""P1"",""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""请于 10 月 24 日 23:59 前完成比赛报名"",""ambiguity"":null}],""needs_confirmation"":true,""notes"":""2026年11月1日公布参赛名单""}"
+P3,positive,3,30942,1,"{""events"":[{""title"":""完成比赛报名"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-24 23:59"",""location"":null,""priority"":""P1"",""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""请于 10 月 24 日 23:59 前完成比赛报名"",""ambiguity"":null}],""needs_confirmation"":true,""notes"":""2026年11月1日公布参赛名单""}"
+P4,positive,1,35032,1,"{""events"": [{""title"": ""缴纳本学期教材费"", ""type"": ""deadline"", ""start_time"": null, ""end_time"": null, ""deadline"": ""2026-10-30 17:00"", ""location"": null, ""priority"": ""P2"", ""estimate_min"": null, ""dependencies"": [], ""confidence"": 0.9, ""missing_fields"": [""location""], ""evidence"": ""本学期教材费缴费截止 10 月 30 日 17:00"", ""ambiguity"": null}], ""needs_confirmation"": true, ""notes"": null}"
+P4,positive,2,32903,1,"{""events"": [{""title"": ""缴纳本学期教材费"", ""type"": ""deadline"", ""start_time"": null, ""end_time"": null, ""deadline"": ""2026-10-30 17:00"", ""location"": null, ""priority"": ""P2"", ""estimate_min"": null, ""dependencies"": [], ""confidence"": 0.9, ""missing_fields"": [""location""], ""evidence"": ""本学期教材费缴费截止 10 月 30 日 17:00"", ""ambiguity"": null}], ""needs_confirmation"": true, ""notes"": null}"
+P4,positive,3,20497,1,"{""events"":[{""title"":""缴纳本学期教材费"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-30 17:00"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":1.0,""missing_fields"":[],""evidence"":""本学期教材费缴费截止 10 月 30 日 17:00"",""ambiguity"":null}],""needs_confirmation"":false,""notes"":null}"
+P5,positive,1,38243,1,"{""events"":[{""title"":""提交课程报告"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-11-03 23:59"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""deadline"",""location""],""evidence"":""课程报告请在 11 月 3 日前提交"",""ambiguity"":""原文未给具体截止时间，默认按当日23:59处理""}],""needs_confirmation"":true,""notes"":""2026年11月10日公布课程报告成绩""}"
+P5,positive,2,31092,1,"{
+  ""events"": [
+    {
+      ""title"": ""提交课程报告"",
+      ""type"": ""deadline"",
+      ""start_time"": null,
+      ""end_time"": null,
+      ""deadline"": ""2026-11-03 23:59"",
+      ""location"": null,
+      ""priority"": ""P2"",
+      ""estimate_min"": null,
+      ""dependencies"": [],
+      ""confidence"": 0.9,
+      ""missing_fields"": [""location""],
+      ""evidence"": ""课程报告请在 11 月 3 日前提交"",
+      ""ambiguity"": ""原文未给出具体提交时间，按截止当日23:59处理""
+    }
+  ],
+  ""needs_confirmation"": true,
+  ""notes"": ""2026年11月10日公布课程报告成绩""
+}"
+P5,positive,3,31025,1,"{""events"":[{""title"":""提交课程报告"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-11-03 23:59"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""课程报告请在 11 月 3 日前提交"",""ambiguity"":""原文未给具体提交时间，按当日23:59处理""}],""needs_confirmation"":true,""notes"":""2026年11月10日公布课程报告成绩""}"
+P6,positive,1,35908,1,"{""events"":[{""title"":""教材订购"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-09-05 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""教材订购窗口为 9 月 1 日至 9 月 5 日"",""ambiguity"":""原文未明确具体截止时间，按2026-09-05 23:59处理，该事项已过期""}],""needs_confirmation"":true,""notes"":""9月6日统一发货""}"
+P6,positive,2,36466,1,"{""events"":[{""title"":""教材订购"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-09-05 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[],""evidence"":""教材订购窗口为 9 月 1 日至 9 月 5 日"",""ambiguity"":""原文未给出具体截止时间，按当日23:59处理；该事项截止日期已过期""}],""needs_confirmation"":true,""notes"":""9月6日统一发货""}"
+P6,positive,3,44991,1,"{""events"":[{""title"":""教材订购"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-09-05 23:59"",""location"":null,""priority"":null,""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""教材订购窗口为 9 月 1 日至 9 月 5 日"",""ambiguity"":""原文未给订购截止具体时间，按当日23:59处理，该事项已过期""}],""needs_confirmation"":true,""notes"":""9月6日统一发货""}"
+P7,positive,1,34098,1,"{""events"":[{""title"":""奖学金申请截止"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-31 23:59"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.7,""missing_fields"":[""deadline"",""location""],""evidence"":""奖学金申请截止 10 月 31 日"",""ambiguity"":""原文未给具体截止时间，默认按当日23:59处理""}],""needs_confirmation"":true,""notes"":""2026年11月15日公示奖学金名单""}"
+P7,positive,2,32330,1,"{""events"":[{""title"":""奖学金申请"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-31 23:59"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""奖学金申请截止 10 月 31 日"",""ambiguity"":""原文未给申请截止具体时间，按当日23:59处理""}],""needs_confirmation"":true,""notes"":""2026年11月15日公示奖学金申请名单""}"
+P7,positive,3,38375,1,"{""events"":[{""title"":""奖学金申请截止"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-31 23:59"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.8,""missing_fields"":[""location""],""evidence"":""奖学金申请截止 10 月 31 日"",""ambiguity"":""原文未给具体时间，按当日23:59处理""}],""needs_confirmation"":true,""notes"":""2026年11月15日公示奖学金申请名单""}"
+P8,positive,1,17156,1,"{""events"":[{""title"":""项目材料上传"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-28 18:00"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":1.0,""missing_fields"":[],""evidence"":""项目材料上传截止 10 月 28 日 18:00，请在截止前完成上传"",""ambiguity"":null}],""needs_confirmation"":false,""notes"":null}"
+P8,positive,2,21666,1,"{""events"":[{""title"":""项目材料上传"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-28 18:00"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":1.0,""missing_fields"":[""location""],""evidence"":""项目材料上传截止 10 月 28 日 18:00，请在截止前完成上传"",""ambiguity"":null}],""needs_confirmation"":true,""notes"":null}"
+P8,positive,3,31897,1,"{""events"":[{""title"":""项目材料上传"",""type"":""deadline"",""start_time"":null,""end_time"":null,""deadline"":""2026-10-28 18:00"",""location"":null,""priority"":""P2"",""estimate_min"":null,""dependencies"":[],""confidence"":0.9,""missing_fields"":[""location""],""evidence"":""项目材料上传截止 10 月 28 日 18:00，请在截止前完成上传"",""ambiguity"":null}],""needs_confirmation"":true,""notes"":null}"
+N1,negative,1,17043,0,"{""events"":[],""needs_confirmation"":false,""notes"":""完整晋级名单公布时间为2026-11-07，无可记录事项""}"
+N1,negative,2,17271,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""完整晋级名单公布日期为2026-11-07""}"
+N1,negative,3,10127,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""完整晋级名单公布时间为2026-11-07""}"
+N2,negative,1,16468,0,"{""events"":[],""needs_confirmation"":false,""notes"":""评选结果公布：10 月 30 日""}"
+N2,negative,2,18302,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""评选结果公布日期为2026-10-30""}"
+N2,negative,3,20648,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""评选结果公布时间为2026年10月30日""}"
+N3,negative,1,22869,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""获奖名单公示日期为2026年11月1日""}"
+N3,negative,2,13865,0,"{""events"":[],""needs_confirmation"":false,""notes"":""获奖名单公示日期为2026年11月1日""}"
+N3,negative,3,21406,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""获奖名单公示日期为2026-11-01""}"
+N4,negative,1,6216,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""无可记录事项""}"
+N4,negative,2,5660,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""无可记录事项""}"
+N4,negative,3,4101,0,"{""events"": [], ""needs_confirmation"": false, ""notes"": ""无可记录事项""}"
