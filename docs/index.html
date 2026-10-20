@@ -1,0 +1,2350 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F9F0E4">
+  <meta name="color-scheme" content="light">
+  <title>小排 · 第 6 周</title>
+  <style>
+    :root {
+      --paper: #faf6ee;
+      --paper-bright: #fffbf4;
+      --canvas: #e7d8c4;
+      --ink: #3b2a1d;
+      --ink-soft: #6f5742;
+      --ink-muted: #7c634c;
+      --ink-faint: #977f68;
+      --line-v: rgba(143, 112, 77, 0.18);
+      --line-hour: rgba(143, 112, 77, 0.24);
+      --line-half: rgba(143, 112, 77, 0.12);
+      --accent: #a95034;
+      --accent-deep: #8c3e27;
+      --accent-soft: #c47451;
+      --honey: #f2ddbb;
+      --honey-deep: #e7c99d;
+      --sage: #dfe6d1;
+      --sage-deep: #c8d4b5;
+      --overdue: #a43d2b;
+      --overdue-bg: #fbe9e2;
+      --hour-height: 44px;
+      --grid-height: 572px;
+      --time-gutter: 37px;
+      --tabbar-height: 66px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --sheet-ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      min-width: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background-color: var(--canvas);
+      background-image:
+        radial-gradient(circle at 14% 8%, rgba(255, 249, 240, 0.92), transparent 34%),
+        radial-gradient(circle at 86% 88%, rgba(223, 200, 173, 0.75), transparent 38%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button {
+      margin: 0;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      background: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      min-width: 0;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .app-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .app-header {
+      position: relative;
+      z-index: 2;
+      flex: none;
+      background:
+        radial-gradient(120% 130% at 82% -22%, rgba(255, 255, 255, 0.78), transparent 58%),
+        linear-gradient(180deg, #f5e2c9 0%, #f9f0e4 60%, var(--paper) 100%);
+    }
+
+    .app-header::before {
+      content: "";
+      position: absolute;
+      top: -76px;
+      right: -24px;
+      width: 210px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 236, 205, 0.84), transparent 70%);
+      pointer-events: none;
+    }
+
+    .status-bar {
+      position: relative;
+      z-index: 1;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 21px;
+      color: var(--ink);
+    }
+
+    .status-time {
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.82;
+    }
+
+    .status-icons svg {
+      display: block;
+    }
+
+    .battery {
+      position: relative;
+      width: 22px;
+      height: 11px;
+      padding: 1.5px;
+      border: 1.2px solid currentColor;
+      border-radius: 3.4px;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: -3.2px;
+      width: 2px;
+      height: 4px;
+      border-radius: 0 2px 2px 0;
+      background: currentColor;
+      opacity: 0.6;
+    }
+
+    .battery__fill {
+      display: block;
+      width: 53%;
+      height: 100%;
+      border-radius: 1.5px;
+      background: currentColor;
+    }
+
+    .battery__text {
+      margin-left: 1px;
+      font-size: 9px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .week-row {
+      position: relative;
+      z-index: 1;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .week-sun {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      color: #bb6842;
+    }
+
+    .week-title {
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+      margin: 0;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .week-title strong {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 680;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .date-strip {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: var(--time-gutter) repeat(7, minmax(0, 1fr));
+      height: 54px;
+    }
+
+    .date-spacer {
+      min-width: 0;
+    }
+
+    .day-cell {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      margin: 1px 2px 3px;
+      border-radius: 12px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      color: var(--ink-soft);
+    }
+
+    .day-date {
+      font-size: 11px;
+      font-weight: 620;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .day-weekday {
+      font-size: 10px;
+      line-height: 1.2;
+      color: var(--ink-muted);
+    }
+
+    .day-dot {
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+
+    .day-cell.is-today {
+      background: linear-gradient(180deg, #b85d3e 0%, #a74c31 100%);
+      box-shadow: 0 5px 12px rgba(124, 61, 37, 0.18);
+    }
+
+    .day-cell.is-today .day-date,
+    .day-cell.is-today .day-weekday {
+      color: #fff8ee;
+    }
+
+    .day-cell.is-today .day-weekday {
+      opacity: 0.82;
+    }
+
+    .day-cell.is-today .day-dot {
+      background: #fff1df;
+    }
+
+    .ddl-card {
+      position: relative;
+      z-index: 1;
+      flex: none;
+      height: 48px;
+      margin: 8px 12px;
+      padding: 0 9px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid rgba(169, 134, 96, 0.26);
+      border-radius: 14px;
+      background: rgba(255, 250, 242, 0.76);
+      box-shadow: 0 8px 22px rgba(103, 68, 39, 0.055);
+      backdrop-filter: blur(12px);
+    }
+
+    .ddl-heading {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding-left: 1px;
+      color: #70543d;
+      font-size: 10.5px;
+      font-weight: 650;
+      letter-spacing: 0.015em;
+      white-space: nowrap;
+    }
+
+    .ddl-heading svg {
+      width: 13px;
+      height: 13px;
+      color: var(--accent);
+    }
+
+    .ddl-count {
+      display: grid;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff7ed;
+      font-size: 9.5px;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ddl-scroll-area {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      height: 36px;
+    }
+
+    .ddl-scroll-area::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 14px;
+      background: linear-gradient(90deg, transparent, rgba(255, 250, 242, 0.96));
+      pointer-events: none;
+    }
+
+    .ddl-scroll {
+      display: flex;
+      gap: 6px;
+      height: 100%;
+      padding-right: 11px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+
+    .ddl-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ddl-chip {
+      flex: none;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 1px solid rgba(177, 143, 105, 0.23);
+      border-radius: 9px;
+      background: var(--paper-bright);
+      text-align: left;
+      transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        transform 160ms ease;
+    }
+
+    .ddl-chip:hover {
+      border-color: rgba(169, 80, 52, 0.3);
+      background: #fffaf1;
+      transform: translateY(-1px);
+    }
+
+    .ddl-chip--overdue {
+      border-color: rgba(164, 61, 43, 0.18);
+      background: var(--overdue-bg);
+    }
+
+    .ddl-chip__dot {
+      flex: none;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ink-faint);
+    }
+
+    .ddl-chip--overdue .ddl-chip__dot {
+      background: var(--overdue);
+    }
+
+    .ddl-chip--today .ddl-chip__dot {
+      background: var(--accent);
+    }
+
+    .ddl-chip__copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .ddl-chip__meta {
+      color: var(--ink-muted);
+      font-size: 9px;
+      line-height: 1.15;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ddl-chip--overdue .ddl-chip__meta {
+      color: var(--overdue);
+      font-weight: 650;
+    }
+
+    .ddl-chip--today .ddl-chip__meta {
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    .ddl-chip__title {
+      max-width: 158px;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 600;
+      text-overflow: ellipsis;
+    }
+
+    .ddl-empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      color: var(--ink-muted);
+      font-size: 10.5px;
+      white-space: nowrap;
+    }
+
+    .timetable-scroll {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: var(--paper);
+      scrollbar-width: none;
+    }
+
+    .timetable-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .app.is-sheet-open .timetable-scroll {
+      overflow: hidden;
+    }
+
+    .timetable {
+      display: grid;
+      grid-template-columns: var(--time-gutter) minmax(0, 1fr);
+      height: var(--grid-height);
+    }
+
+    .time-rail {
+      position: relative;
+    }
+
+    .time-label {
+      position: absolute;
+      right: 7px;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+      font-size: 9px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-label--first {
+      top: 4px !important;
+      transform: none;
+    }
+
+    .time-label--last {
+      top: calc(var(--grid-height) - 4px) !important;
+      transform: translateY(-100%);
+    }
+
+    .week-grid {
+      position: relative;
+      height: 100%;
+    }
+
+    .grid-lines {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--line-hour);
+    }
+
+    .grid-line--half {
+      border-top-style: dashed;
+      border-top-color: var(--line-half);
+    }
+
+    .week-days {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      height: 100%;
+    }
+
+    .day-column {
+      position: relative;
+      height: 100%;
+      border-left: 1px solid var(--line-v);
+      cursor: pointer;
+    }
+
+    .day-column:last-child {
+      border-right: 1px solid var(--line-v);
+    }
+
+    .day-column.is-today {
+      background: linear-gradient(180deg, rgba(244, 216, 179, 0.36), rgba(250, 246, 238, 0) 72%);
+    }
+
+    .schedule-block {
+      position: absolute;
+      z-index: 2;
+      left: 3px;
+      right: 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      overflow: hidden;
+      padding: 5px 4px;
+      border: 1px solid rgba(153, 112, 66, 0.12);
+      border-radius: 10px;
+      background: linear-gradient(155deg, #f6e5ca 0%, #f0d8b4 100%);
+      box-shadow:
+        0 1px 1px rgba(98, 67, 39, 0.05),
+        inset 0 1px rgba(255, 255, 255, 0.42);
+      color: #4b3420;
+      text-align: center;
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        filter 160ms ease;
+      animation: block-in 320ms both;
+      animation-delay: calc(var(--order, 0) * 18ms);
+    }
+
+    .schedule-block:hover {
+      z-index: 3;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(109, 73, 39, 0.14);
+      filter: saturate(1.03);
+    }
+
+    .schedule-block:active {
+      transform: scale(0.985);
+    }
+
+    .schedule-block--event {
+      border-color: rgba(102, 123, 74, 0.14);
+      background: linear-gradient(155deg, #e7edd9 0%, #dce5cc 100%);
+      color: #43502f;
+    }
+
+    .schedule-block__title {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.18;
+      letter-spacing: 0.005em;
+      text-wrap: balance;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .schedule-block__location {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      color: rgba(86, 60, 34, 0.76);
+      font-size: 9px;
+      line-height: 1.18;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .schedule-block--event .schedule-block__location {
+      color: rgba(63, 77, 42, 0.78);
+    }
+
+    .schedule-block--short .schedule-block__location,
+    .schedule-block--medium .schedule-block__location {
+      display: none;
+    }
+
+    .fab {
+      position: absolute;
+      z-index: 7;
+      right: 18px;
+      bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 16px);
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #b45b3d 0%, #9a442c 100%);
+      box-shadow:
+        0 11px 24px rgba(124, 59, 35, 0.28),
+        0 2px 4px rgba(124, 59, 35, 0.16);
+      color: #fff8ee;
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease;
+    }
+
+    .fab:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 28px rgba(124, 59, 35, 0.31),
+        0 3px 5px rgba(124, 59, 35, 0.16);
+    }
+
+    .fab:active {
+      transform: scale(0.96);
+    }
+
+    .fab svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .tabbar {
+      position: relative;
+      z-index: 5;
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      height: calc(var(--tabbar-height) + var(--safe-bottom));
+      padding: 7px 12px var(--safe-bottom);
+      border-top: 1px solid rgba(169, 134, 96, 0.2);
+      background: rgba(255, 251, 244, 0.92);
+      backdrop-filter: blur(18px);
+    }
+
+    .tab {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border-radius: 12px;
+      color: var(--ink-muted);
+      font-size: 10px;
+      line-height: 1.2;
+      transition:
+        color 160ms ease,
+        background-color 160ms ease;
+    }
+
+    .tab:hover {
+      color: var(--ink-soft);
+      background: rgba(169, 80, 52, 0.045);
+    }
+
+    .tab.is-active {
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    .tab__icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 24px;
+      border-radius: 8px;
+      transition: background-color 180ms ease;
+    }
+
+    .tab.is-active .tab__icon {
+      background: rgba(169, 80, 52, 0.105);
+    }
+
+    .tab__icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .tab__badge {
+      position: absolute;
+      top: 7px;
+      left: calc(50% + 8px);
+      display: grid;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px var(--paper-bright);
+      color: #fff8ee;
+      font-size: 8.5px;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sheet-layer {
+      position: absolute;
+      z-index: 40;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(53, 35, 21, 0.34);
+      opacity: 0;
+      transition: opacity 220ms ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .detail-sheet {
+      position: relative;
+      width: 100%;
+      max-height: min(78%, 570px);
+      overflow-y: auto;
+      padding: 9px 20px calc(20px + var(--safe-bottom));
+      border-radius: 27px 27px 0 0;
+      background: linear-gradient(180deg, #fffcf7 0%, #fff9f0 100%);
+      box-shadow: 0 -18px 54px rgba(55, 35, 20, 0.2);
+      transform: translateY(100%);
+      transition: transform 280ms var(--sheet-ease);
+      scrollbar-width: none;
+    }
+
+    .detail-sheet::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sheet-layer.is-open .sheet-backdrop {
+      opacity: 1;
+    }
+
+    .sheet-layer.is-open .detail-sheet {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      margin: 0 auto 15px;
+      border-radius: 999px;
+      background: #d9c3a8;
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(92, 64, 39, 0.065);
+      color: var(--ink-soft);
+    }
+
+    .sheet-close:hover {
+      background: rgba(92, 64, 39, 0.1);
+    }
+
+    .sheet-close svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .sheet-kind {
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #f3e4cf;
+      color: #7c5437;
+      font-size: 9.5px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .sheet-kind--event {
+      background: #e5ead8;
+      color: #53613c;
+    }
+
+    .sheet-kind--ddl {
+      background: #f8e3db;
+      color: var(--overdue);
+    }
+
+    .sheet-title {
+      max-width: calc(100% - 24px);
+      margin: 8px 0 16px;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 680;
+      line-height: 1.35;
+      letter-spacing: -0.015em;
+    }
+
+    .sheet-facts {
+      margin: 0 0 18px;
+      padding: 1px 14px;
+      border-radius: 14px;
+      background: #faf3e8;
+    }
+
+    .sheet-fact {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 8px;
+      padding: 11px 0;
+      border-top: 1px dashed rgba(147, 111, 74, 0.18);
+    }
+
+    .sheet-fact:first-child {
+      border-top: 0;
+    }
+
+    .sheet-fact dt {
+      color: var(--ink-muted);
+      font-size: 10.5px;
+      line-height: 1.6;
+    }
+
+    .sheet-fact dd {
+      margin: 0;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 550;
+    }
+
+    .sheet-primary {
+      width: 100%;
+      height: 46px;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #b45a3c 0%, #9b452d 100%);
+      box-shadow: 0 8px 18px rgba(129, 64, 39, 0.2);
+      color: #fff8ee;
+      font-size: 13.5px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      transition:
+        transform 150ms ease,
+        box-shadow 150ms ease,
+        filter 150ms ease;
+    }
+
+    .sheet-primary:hover {
+      filter: brightness(1.035);
+      box-shadow: 0 10px 21px rgba(129, 64, 39, 0.24);
+    }
+
+    .sheet-primary:active {
+      transform: scale(0.992);
+    }
+
+    .form-sheet {
+      position: relative;
+      width: 100%;
+      max-height: min(92%, 700px);
+      overflow-y: auto;
+      padding: 9px 20px calc(20px + var(--safe-bottom));
+      border-radius: 27px 27px 0 0;
+      background: linear-gradient(180deg, #fffcf7 0%, #fff9f0 100%);
+      box-shadow: 0 -18px 54px rgba(55, 35, 20, 0.2);
+      transform: translateY(100%);
+      transition: transform 280ms var(--sheet-ease);
+      scrollbar-width: none;
+    }
+
+    .form-sheet::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sheet-layer.is-open .form-sheet {
+      transform: translateY(0);
+    }
+
+    .form-sheet__title {
+      margin: 2px 0 16px;
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 680;
+      letter-spacing: -0.015em;
+    }
+
+    .form-types {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      margin-bottom: 18px;
+      padding: 4px;
+      border-radius: 14px;
+      background: #f2e7d6;
+    }
+
+    .form-type {
+      min-height: 38px;
+      border-radius: 10px;
+      color: var(--ink-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+    }
+
+    .form-type[aria-checked="true"] {
+      background: var(--paper-bright);
+      box-shadow: 0 2px 8px rgba(103, 68, 39, 0.1);
+      color: var(--ink);
+    }
+
+    .form-type[data-form-type="event"][aria-checked="true"] {
+      background: #e5ead8;
+      color: #465433;
+    }
+
+    .form-type[data-form-type="course"][aria-checked="true"] {
+      background: #f2ddbb;
+      color: #684a2c;
+    }
+
+    .form-type[data-form-type="ddl"][aria-checked="true"] {
+      background: #f8e3db;
+      color: var(--overdue);
+    }
+
+    .form-field {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink-muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 12px;
+      border: 1px solid rgba(147, 111, 74, 0.24);
+      border-radius: 12px;
+      background: #faf3e8;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13.5px;
+      color-scheme: light;
+      transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        background-color 150ms ease;
+    }
+
+    .form-input::placeholder {
+      color: var(--ink-faint);
+    }
+
+    .form-input:focus {
+      border-color: rgba(169, 80, 52, 0.55);
+      background: var(--paper-bright);
+      box-shadow: 0 0 0 3px rgba(169, 80, 52, 0.1);
+      outline: none;
+    }
+
+    .form-input[aria-invalid="true"] {
+      border-color: rgba(164, 61, 43, 0.55);
+    }
+
+    .form-time-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-time-row .form-input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .form-time-dash {
+      flex: none;
+      color: var(--ink-faint);
+      font-size: 11px;
+    }
+
+    .form-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .form-day {
+      position: relative;
+      display: flex;
+      height: 48px;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: 1px solid rgba(147, 111, 74, 0.16);
+      border-radius: 10px;
+      background: #faf3e8;
+      color: var(--ink-soft);
+      transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+    }
+
+    .form-day__weekday {
+      color: var(--ink-muted);
+      font-size: 9.5px;
+      line-height: 1;
+    }
+
+    .form-day__date {
+      font-size: 10.5px;
+      font-weight: 620;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .form-day[aria-checked="true"] {
+      border-color: transparent;
+      background: linear-gradient(180deg, #b85d3e 0%, #a74c31 100%);
+      box-shadow: 0 5px 12px rgba(124, 61, 37, 0.16);
+    }
+
+    .form-day[aria-checked="true"] .form-day__weekday,
+    .form-day[aria-checked="true"] .form-day__date {
+      color: #fff8ee;
+    }
+
+    .form-day[aria-checked="true"] .form-day__weekday {
+      opacity: 0.82;
+    }
+
+    .form-day.is-today::after {
+      content: "";
+      position: absolute;
+      bottom: 4px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+
+    .form-day[aria-checked="true"].is-today::after {
+      background: #fff1df;
+    }
+
+    .form-error {
+      margin: -2px 0 12px;
+      color: var(--overdue);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .schedule-block.is-new {
+      z-index: 4;
+    }
+
+    .schedule-block.is-new::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 2px rgba(169, 80, 52, 0.55);
+      animation: new-block-glow 1.8s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes new-block-glow {
+      from {
+        box-shadow: inset 0 0 0 2px rgba(169, 80, 52, 0.55);
+        opacity: 1;
+      }
+      to {
+        box-shadow: inset 0 0 0 2px rgba(169, 80, 52, 0);
+        opacity: 0;
+      }
+    }
+
+    .toast {
+      position: absolute;
+      z-index: 60;
+      left: 50%;
+      bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 22px);
+      max-width: calc(100% - 48px);
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(57, 40, 25, 0.93);
+      box-shadow: 0 8px 24px rgba(55, 35, 20, 0.2);
+      color: #fff8ee;
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 9px);
+      transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes block-in {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (min-width: 560px) {
+      body {
+        padding: 24px;
+      }
+
+      .app {
+        height: min(calc(100dvh - 48px), 880px);
+        border-radius: 34px;
+        box-shadow:
+          0 34px 80px -24px rgba(77, 51, 30, 0.48),
+          0 2px 5px rgba(77, 51, 30, 0.08);
+        outline: 1px solid rgba(255, 255, 255, 0.64);
+        outline-offset: -1px;
+      }
+    }
+
+    @media (max-width: 370px) {
+      :root {
+        --time-gutter: 33px;
+      }
+
+      .schedule-block {
+        left: 2px;
+        right: 2px;
+        padding-right: 3px;
+        padding-left: 3px;
+      }
+
+      .schedule-block__title {
+        font-size: 10px;
+      }
+
+      .schedule-block__location {
+        font-size: 8px;
+      }
+
+      .ddl-heading {
+        font-size: 10px;
+      }
+
+      .ddl-card {
+        margin-right: 9px;
+        margin-left: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <div class="app-content" id="appContent">
+      <header class="app-header">
+        <div class="status-bar" aria-hidden="true">
+          <span class="status-time">10:39</span>
+          <span class="status-icons">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+              <rect x="0" y="8" width="2.5" height="4" rx="1"></rect>
+              <rect x="4.5" y="6" width="2.5" height="6" rx="1"></rect>
+              <rect x="9" y="3" width="2.5" height="9" rx="1"></rect>
+              <rect x="13.5" y="0" width="2.5" height="12" rx="1"></rect>
+            </svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M1.4 3.6a10.2 10.2 0 0 1 13.2 0"></path>
+              <path d="M3.9 6.4a6.5 6.5 0 0 1 8.2 0"></path>
+              <path d="M6.5 9a3 3 0 0 1 3 0"></path>
+              <circle cx="8" cy="11.1" r="0.75" fill="currentColor" stroke="none"></circle>
+            </svg>
+            <span class="battery"><span class="battery__fill"></span></span>
+            <span class="battery__text">53</span>
+          </span>
+        </div>
+
+        <div class="week-row">
+          <svg class="week-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.1" fill="currentColor"></circle>
+            <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+              <path d="M12 2.7v2.1"></path>
+              <path d="M12 19.2v2.1"></path>
+              <path d="M2.7 12h2.1"></path>
+              <path d="M19.2 12h2.1"></path>
+              <path d="m5.4 5.4 1.5 1.5"></path>
+              <path d="m17.1 17.1 1.5 1.5"></path>
+              <path d="m18.6 5.4-1.5 1.5"></path>
+              <path d="m6.9 17.1-1.5 1.5"></path>
+            </g>
+          </svg>
+          <h1 class="week-title"><span>第</span><strong>6</strong><span>周</span></h1>
+        </div>
+
+        <div class="date-strip" id="dateStrip" role="list" aria-label="本周日期"></div>
+
+        <section class="ddl-card" aria-labelledby="ddlHeading">
+          <div class="ddl-heading" id="ddlHeading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 5h6"></path>
+              <path d="M9 3.5h6a1.5 1.5 0 0 1 1.5 1.5v.5H19a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1h2.5V5A1.5 1.5 0 0 1 9 3.5Z"></path>
+              <path d="m8.3 14 2.2 2.2 4.9-5"></path>
+            </svg>
+            <span>本周 DDL</span>
+            <span class="ddl-count" id="ddlCount">4</span>
+          </div>
+          <div class="ddl-scroll-area">
+            <div class="ddl-scroll" id="ddlScroll" aria-label="本周待处理 DDL"></div>
+          </div>
+        </section>
+      </header>
+
+      <div class="timetable-scroll" id="timetableScroll">
+        <section class="timetable" aria-label="本周课表">
+          <div class="time-rail" id="timeRail" aria-hidden="true"></div>
+          <div class="week-grid">
+            <div class="grid-lines" id="gridLines" aria-hidden="true"></div>
+            <div class="week-days" id="weekDays"></div>
+          </div>
+        </section>
+      </div>
+
+      <button class="fab" id="addButton" type="button" aria-label="添加日程或 DDL">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M12 5v14"></path>
+          <path d="M5 12h14"></path>
+        </svg>
+      </button>
+
+      <nav class="tabbar" aria-label="主导航">
+        <button class="tab is-active" type="button" data-tab="schedule" aria-current="page">
+          <span class="tab__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.2" y="3.2" width="7.2" height="7.2" rx="2"></rect>
+              <rect x="13.6" y="3.2" width="7.2" height="7.2" rx="2"></rect>
+              <rect x="3.2" y="13.6" width="7.2" height="7.2" rx="2"></rect>
+              <rect x="13.6" y="13.6" width="7.2" height="7.2" rx="2"></rect>
+            </svg>
+          </span>
+          <span>课表</span>
+        </button>
+        <button class="tab" type="button" data-tab="todo">
+          <span class="tab__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4.2" y="3.8" width="15.6" height="16.4" rx="3"></rect>
+              <path d="M8.2 8.4h7.6"></path>
+              <path d="M8.2 12h7.6"></path>
+              <path d="M8.2 15.6h4.8"></path>
+            </svg>
+          </span>
+          <span class="tab__badge" id="todoBadge">4</span>
+          <span>待办</span>
+        </button>
+        <button class="tab" type="button" data-tab="me">
+          <span class="tab__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.4"></circle>
+              <path d="M4.9 20.1c.9-3.6 3.7-5.5 7.1-5.5s6.2 1.9 7.1 5.5"></path>
+            </svg>
+          </span>
+          <span>我的</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sheet-layer" id="sheetLayer" hidden>
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
+      <section class="detail-sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <button class="sheet-close" id="sheetClose" type="button" aria-label="关闭详情">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="m6 6 12 12"></path>
+            <path d="M18 6 6 18"></path>
+          </svg>
+        </button>
+        <span class="sheet-kind" id="sheetKind">课程</span>
+        <h2 class="sheet-title" id="sheetTitle"></h2>
+        <dl class="sheet-facts" id="sheetFacts"></dl>
+        <button class="sheet-primary" id="sheetPrimary" type="button">知道了</button>
+      </section>
+    </div>
+
+    <div class="sheet-layer" id="formSheetLayer" hidden>
+      <div class="sheet-backdrop" id="formSheetBackdrop"></div>
+      <section class="form-sheet" id="formSheet" role="dialog" aria-modal="true" aria-labelledby="formSheetTitle" tabindex="-1">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <button class="sheet-close" id="formSheetClose" type="button" aria-label="关闭新建表单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="m6 6 12 12"></path>
+            <path d="M18 6 6 18"></path>
+          </svg>
+        </button>
+        <h2 class="form-sheet__title" id="formSheetTitle">新建日程</h2>
+        <form id="addForm" novalidate>
+          <div class="form-types" id="formTypes" role="radiogroup" aria-label="类型">
+            <button class="form-type" type="button" role="radio" aria-checked="true" data-form-type="event">日程</button>
+            <button class="form-type" type="button" role="radio" aria-checked="false" data-form-type="course">课程</button>
+            <button class="form-type" type="button" role="radio" aria-checked="false" data-form-type="ddl">DDL</button>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="formTitle">标题</label>
+            <input class="form-input" id="formTitle" type="text" maxlength="40" placeholder="例如：小组讨论 / 秋招宣讲" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <span class="form-label" id="formDayLabel">日期</span>
+            <div class="form-days" id="formDays" role="radiogroup" aria-labelledby="formDayLabel"></div>
+          </div>
+          <div class="form-field" id="formTimeField">
+            <span class="form-label">时间</span>
+            <div class="form-time-row">
+              <input class="form-input" id="formStart" type="time" step="300" aria-label="开始时间">
+              <span class="form-time-dash" aria-hidden="true">至</span>
+              <input class="form-input" id="formEnd" type="time" step="300" aria-label="结束时间">
+            </div>
+          </div>
+          <div class="form-field" id="formDueField" hidden>
+            <label class="form-label" for="formDue">截止时间</label>
+            <input class="form-input" id="formDue" type="time" step="300">
+          </div>
+          <div class="form-field" id="formLocationField">
+            <label class="form-label" for="formLocation">地点</label>
+            <input class="form-input" id="formLocation" type="text" maxlength="30" placeholder="选填，例如：逸夫楼 304" autocomplete="off">
+          </div>
+          <p class="form-error" id="formError" role="alert" hidden></p>
+          <button class="sheet-primary" id="formSubmit" type="submit">添加日程</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script id="schedule-core">
+    const DEFAULT_DAY_START = 8 * 60;
+    const DEFAULT_HOUR_HEIGHT = 44;
+    const DEFAULT_BLOCK_GAP = 2;
+
+    function roundToHundredth(value) {
+      return Math.round(value * 100) / 100;
+    }
+
+    function parseTimeToMinutes(time) {
+      const match = /^(\d{1,2}):(\d{2})$/.exec(time);
+      if (!match) throw new RangeError(`Invalid time: ${time}`);
+
+      const hours = Number(match[1]);
+      const minutes = Number(match[2]);
+      if (hours > 23 || minutes > 59) throw new RangeError(`Invalid time: ${time}`);
+
+      return hours * 60 + minutes;
+    }
+
+    function getBlockLayout(start, end, options = {}) {
+      const dayStartMinutes = options.dayStartMinutes ?? DEFAULT_DAY_START;
+      const hourHeight = options.hourHeight ?? DEFAULT_HOUR_HEIGHT;
+      const gap = options.gap ?? DEFAULT_BLOCK_GAP;
+      const startMinutes = parseTimeToMinutes(start);
+      const endMinutes = parseTimeToMinutes(end);
+
+      if (endMinutes <= startMinutes) {
+        throw new RangeError('End time must be after start time');
+      }
+
+      return {
+        top: roundToHundredth(((startMinutes - dayStartMinutes) / 60) * hourHeight),
+        height: roundToHundredth(((endMinutes - startMinutes) / 60) * hourHeight - gap),
+        durationMinutes: endMinutes - startMinutes,
+      };
+    }
+
+    function getBlockDensity(durationMinutes) {
+      if (durationMinutes < 45) return 'short';
+      if (durationMinutes < 75) return 'medium';
+      return 'full';
+    }
+
+    const DEFAULT_DAY_END = 21 * 60;
+    const WEEKDAY_LABELS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+    function snapMinutes(minutes, step = 30) {
+      return Math.round(minutes / step) * step;
+    }
+
+    function minutesToTime(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const rest = minutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(rest).padStart(2, '0')}`;
+    }
+
+    function getQuickAddRange(offsetY, options = {}) {
+      const dayStartMinutes = options.dayStartMinutes ?? DEFAULT_DAY_START;
+      const dayEndMinutes = options.dayEndMinutes ?? DEFAULT_DAY_END;
+      const hourHeight = options.hourHeight ?? DEFAULT_HOUR_HEIGHT;
+      const step = options.step ?? 30;
+      const duration = options.duration ?? 60;
+
+      const rawMinutes = dayStartMinutes + (offsetY / hourHeight) * 60;
+      const latestStart = dayEndMinutes - duration;
+      const startMinutes = Math.min(
+        Math.max(snapMinutes(rawMinutes, step), dayStartMinutes),
+        latestStart,
+      );
+
+      return {
+        start: minutesToTime(startMinutes),
+        end: minutesToTime(startMinutes + duration),
+        startMinutes,
+        endMinutes: startMinutes + duration,
+      };
+    }
+
+    function getTimeRangeError(start, end, options = {}) {
+      const dayStartMinutes = options.dayStartMinutes ?? DEFAULT_DAY_START;
+      const dayEndMinutes = options.dayEndMinutes ?? DEFAULT_DAY_END;
+      const startMinutes = parseTimeToMinutes(start);
+      const endMinutes = parseTimeToMinutes(end);
+
+      if (endMinutes <= startMinutes) return '结束时间需要晚于开始时间';
+      if (startMinutes < dayStartMinutes) return '开始时间不能早于 08:00';
+      if (endMinutes > dayEndMinutes) return '结束时间不能晚于 21:00';
+      return '';
+    }
+
+    function findScheduleConflict(blocks, candidate) {
+      const startMinutes = parseTimeToMinutes(candidate.start);
+      const endMinutes = parseTimeToMinutes(candidate.end);
+
+      return blocks.find((block) => {
+        if (block.id === candidate.id) return false;
+        if (block.day !== candidate.day) return false;
+        const blockStart = parseTimeToMinutes(block.start);
+        const blockEnd = parseTimeToMinutes(block.end);
+        return startMinutes < blockEnd && endMinutes > blockStart;
+      }) ?? null;
+    }
+
+    function getDdlStatus(dueDate, todayIso) {
+      if (dueDate < todayIso) return 'overdue';
+      if (dueDate === todayIso) return 'today';
+      return 'upcoming';
+    }
+
+    function formatDdlMeta(dueDate, dueTime, todayIso) {
+      const due = Date.parse(`${dueDate}T00:00:00`);
+      const today = Date.parse(`${todayIso}T00:00:00`);
+      const daysLate = Math.round((today - due) / 86400000);
+
+      if (daysLate > 0) return `逾期 ${daysLate} 天`;
+      if (daysLate === 0) return `今天 ${dueTime}`;
+      return `${WEEKDAY_LABELS[new Date(due).getDay()]} ${dueTime}`;
+    }
+
+    function formatDueLabel(dueDate, dueTime) {
+      const date = new Date(`${dueDate}T00:00:00`);
+      const monthDay = `${date.getMonth() + 1}/${date.getDate()}`;
+      return `${monthDay} ${WEEKDAY_LABELS[date.getDay()]} · ${dueTime}`;
+    }
+
+    function compareDdl(a, b) {
+      const left = `${a.dueDate} ${a.dueTime ?? '23:59'}`;
+      const right = `${b.dueDate} ${b.dueTime ?? '23:59'}`;
+      return left.localeCompare(right);
+    }
+  </script>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const HOUR_HEIGHT = 44;
+      const DAY_START_HOUR = 8;
+      const DAY_END_HOUR = 21;
+      const MOCK_WEEK = [
+        { iso: '2026-10-19', monthDay: '10/19', weekday: '周一', isToday: true },
+        { iso: '2026-10-20', monthDay: '10/20', weekday: '周二', isToday: false },
+        { iso: '2026-10-21', monthDay: '10/21', weekday: '周三', isToday: false },
+        { iso: '2026-10-22', monthDay: '10/22', weekday: '周四', isToday: false },
+        { iso: '2026-10-23', monthDay: '10/23', weekday: '周五', isToday: false },
+        { iso: '2026-10-24', monthDay: '10/24', weekday: '周六', isToday: false },
+        { iso: '2026-10-25', monthDay: '10/25', weekday: '周日', isToday: false },
+      ];
+
+      const scheduleBlocks = [
+        { id: 'os-mon', day: 0, kind: 'course', title: '操作系统', location: '管理楼 506', start: '08:20', end: '09:55' },
+        { id: 'or-mon', day: 0, kind: 'course', title: '运筹学 A', location: '逸夫楼 304', start: '13:30', end: '15:05' },
+        { id: 'os-tue', day: 1, kind: 'course', title: '操作系统', location: '管理楼 508', start: '08:20', end: '09:55' },
+        { id: 'ethics-tue', day: 1, kind: 'course', title: '商业伦理与商业道德', location: '管理楼 512', start: '13:30', end: '15:05' },
+        { id: 'os-wed', day: 2, kind: 'course', title: '操作系统', location: '管理楼 506', start: '08:20', end: '09:55' },
+        { id: 'or-wed', day: 2, kind: 'course', title: '运筹学 A', location: '逸夫楼 304', start: '13:30', end: '15:05' },
+        { id: 'harmony-wed', day: 2, kind: 'course', title: '鸿蒙移动应用开发', location: '教学楼 501', start: '19:00', end: '20:35' },
+        { id: 'ethics-thu', day: 3, kind: 'course', title: '商业伦理与商业道德', location: '管理楼 512', start: '13:30', end: '15:05' },
+        { id: 'career-talk-thu', day: 3, kind: 'event', title: '秋招宣讲', location: '逸夫楼报告厅', start: '16:10', end: '17:10' },
+        { id: 'harmony-thu', day: 3, kind: 'course', title: '鸿蒙移动应用开发', location: '信息楼 B301', start: '19:00', end: '20:35' },
+        { id: 'os-fri', day: 4, kind: 'course', title: '操作系统', location: '管理楼 703', start: '08:20', end: '09:55' },
+        { id: 'or-fri', day: 4, kind: 'course', title: '运筹学 A', location: '逸夫楼 304', start: '13:30', end: '15:05' },
+        { id: 'mao-fri', day: 4, kind: 'course', title: '毛泽东思想和中国特色社会主义理论体系概论', location: '逸夫楼 301', start: '15:25', end: '16:55' },
+      ];
+
+      let ddlItems = [
+        {
+          id: 'linear-algebra',
+          title: '线性代数作业',
+          meta: '逾期 1 天',
+          status: 'overdue',
+          statusLabel: '已逾期',
+          due: '10/18 周日 · 23:59',
+          dueDate: '2026-10-18',
+          dueTime: '23:59',
+        },
+        {
+          id: 'youth-study',
+          title: '青年大学习',
+          meta: '今天 22:00',
+          status: 'today',
+          statusLabel: '今天到期',
+          due: '10/19 周一 · 22:00',
+          dueDate: '2026-10-19',
+          dueTime: '22:00',
+        },
+        {
+          id: 'os-lab',
+          title: '操作系统实验报告',
+          meta: '周四 12:00',
+          status: 'upcoming',
+          statusLabel: '本周内',
+          due: '10/22 周四 · 12:00',
+          dueDate: '2026-10-22',
+          dueTime: '12:00',
+        },
+        {
+          id: 'ethics-slides',
+          title: '商业伦理小组展示',
+          meta: '周日 23:59',
+          status: 'upcoming',
+          statusLabel: '本周内',
+          due: '10/25 周日 · 23:59',
+          dueDate: '2026-10-25',
+          dueTime: '23:59',
+        },
+      ];
+
+      const today = MOCK_WEEK.find((day) => day.isToday) ?? MOCK_WEEK[0];
+      const TODAY_INDEX = Math.max(MOCK_WEEK.indexOf(today), 0);
+
+      const app = document.getElementById('app');
+      const appContent = document.getElementById('appContent');
+      const dateStrip = document.getElementById('dateStrip');
+      const weekDays = document.getElementById('weekDays');
+      const timeRail = document.getElementById('timeRail');
+      const gridLines = document.getElementById('gridLines');
+      const ddlScroll = document.getElementById('ddlScroll');
+      const ddlCount = document.getElementById('ddlCount');
+      const ddlHeading = document.getElementById('ddlHeading');
+      const todoBadge = document.getElementById('todoBadge');
+      const sheetLayer = document.getElementById('sheetLayer');
+      const sheetBackdrop = document.getElementById('sheetBackdrop');
+      const detailSheet = document.getElementById('detailSheet');
+      const sheetClose = document.getElementById('sheetClose');
+      const sheetKind = document.getElementById('sheetKind');
+      const sheetTitle = document.getElementById('sheetTitle');
+      const sheetFacts = document.getElementById('sheetFacts');
+      const sheetPrimary = document.getElementById('sheetPrimary');
+      const addButton = document.getElementById('addButton');
+      const formSheetLayer = document.getElementById('formSheetLayer');
+      const formSheetBackdrop = document.getElementById('formSheetBackdrop');
+      const formSheet = document.getElementById('formSheet');
+      const formSheetClose = document.getElementById('formSheetClose');
+      const formSheetTitle = document.getElementById('formSheetTitle');
+      const addForm = document.getElementById('addForm');
+      const formTypes = document.getElementById('formTypes');
+      const formTitle = document.getElementById('formTitle');
+      const formDays = document.getElementById('formDays');
+      const formDayLabel = document.getElementById('formDayLabel');
+      const formTimeField = document.getElementById('formTimeField');
+      const formStart = document.getElementById('formStart');
+      const formEnd = document.getElementById('formEnd');
+      const formDueField = document.getElementById('formDueField');
+      const formDue = document.getElementById('formDue');
+      const formLocationField = document.getElementById('formLocationField');
+      const formLocation = document.getElementById('formLocation');
+      const formError = document.getElementById('formError');
+      const formSubmit = document.getElementById('formSubmit');
+      const toast = document.getElementById('toast');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const toastMessages = new Set();
+
+      let toastTimer = 0;
+      let lastFocusedElement = null;
+      let sheetIsOpen = false;
+      let closeAfterTransition = null;
+      let formIsOpen = false;
+      let formLastFocused = null;
+      let formCloseAfterTransition = null;
+      let formType = 'event';
+      let formDayIndex = TODAY_INDEX;
+      let gridPointerStart = null;
+
+      const FORM_TYPES = {
+        event: { title: '新建日程', submit: '添加日程' },
+        course: { title: '新建课程', submit: '添加课程' },
+        ddl: { title: '新建 DDL', submit: '添加 DDL' },
+      };
+
+      function createElement(tagName, className, text) {
+        const element = document.createElement(tagName);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      }
+
+      function showToast(message) {
+        if (toastMessages.size > 1) {
+          // Keep only the newest message so overlapping actions do not queue up.
+          toastMessages.clear();
+        }
+        toastMessages.add(message);
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          toast.classList.remove('is-visible');
+          toastMessages.clear();
+        }, 2400);
+      }
+
+      function hideToast() {
+        window.clearTimeout(toastTimer);
+        toastMessages.clear();
+        toast.classList.remove('is-visible');
+      }
+
+      function formatDuration(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const rest = minutes % 60;
+        if (hours && rest) return `${hours} 小时 ${rest} 分钟`;
+        if (hours) return `${hours} 小时`;
+        return `${rest} 分钟`;
+      }
+
+      function renderDateStrip() {
+        const spacer = createElement('div', 'date-spacer');
+        spacer.setAttribute('role', 'presentation');
+        dateStrip.replaceChildren(spacer);
+
+        MOCK_WEEK.forEach((day) => {
+          const cell = createElement('div', 'day-cell');
+          const date = createElement('span', 'day-date', day.monthDay);
+          const weekday = createElement('span', 'day-weekday', day.weekday);
+          const dot = createElement('span', 'day-dot');
+          dot.hidden = true;
+          dot.setAttribute('aria-hidden', 'true');
+
+          cell.dataset.date = day.iso;
+          cell.dataset.weekday = day.weekday;
+          cell.setAttribute('role', 'listitem');
+          cell.append(date, weekday, dot);
+          if (day.isToday) {
+            cell.classList.add('is-today');
+            cell.setAttribute('aria-current', 'date');
+          }
+          dateStrip.append(cell);
+        });
+      }
+
+      function updateDayLabels() {
+        dateStrip.querySelectorAll('.day-cell').forEach((cell) => {
+          const day = MOCK_WEEK.find((item) => item.iso === cell.dataset.date);
+          const dot = cell.querySelector('.day-dot');
+          const dueCount = ddlItems.filter((item) => item.dueDate === day.iso).length;
+          const labels = [day.monthDay, day.weekday];
+          if (day.isToday) labels.push('今天');
+          if (dueCount) labels.push(`${dueCount} 个 DDL`);
+          cell.setAttribute('aria-label', labels.join('，'));
+          dot.hidden = dueCount === 0;
+        });
+      }
+
+      function renderTimeRail() {
+        timeRail.replaceChildren();
+        const labels = [];
+        for (let hour = DAY_START_HOUR; hour <= DAY_END_HOUR; hour += 1) {
+          const label = createElement('span', 'time-label', `${hour}:00`);
+          label.style.top = `${(hour - DAY_START_HOUR) * HOUR_HEIGHT}px`;
+          if (hour === DAY_START_HOUR) label.classList.add('time-label--first');
+          if (hour === DAY_END_HOUR) label.classList.add('time-label--last');
+          labels.push(label);
+        }
+        timeRail.append(...labels);
+      }
+
+      function renderGridLines() {
+        gridLines.replaceChildren();
+        const lines = [];
+        const totalMinutes = (DAY_END_HOUR - DAY_START_HOUR) * 60;
+        for (let minutes = 0; minutes <= totalMinutes; minutes += 30) {
+          const isHour = minutes % 60 === 0;
+          const line = createElement('div', `grid-line${isHour ? '' : ' grid-line--half'}`);
+          line.style.top = `${(minutes / 60) * HOUR_HEIGHT}px`;
+          lines.push(line);
+        }
+        gridLines.append(...lines);
+      }
+
+      function renderWeekDays() {
+        const columns = MOCK_WEEK.map((day) => {
+          const column = createElement('div', `day-column${day.isToday ? ' is-today' : ''}`);
+          column.dataset.day = String(MOCK_WEEK.indexOf(day));
+          column.setAttribute('role', 'group');
+          column.setAttribute('aria-label', `${day.weekday} ${day.monthDay}`);
+          return column;
+        });
+        weekDays.replaceChildren(...columns);
+      }
+
+      function renderScheduleBlocks() {
+        const columns = [...weekDays.querySelectorAll('.day-column')];
+        columns.forEach((column) => column.replaceChildren());
+
+        const ordered = scheduleBlocks
+          .slice()
+          .sort((a, b) => parseTimeToMinutes(a.start) - parseTimeToMinutes(b.start));
+
+        ordered.forEach((block, index) => {
+          const layout = getBlockLayout(block.start, block.end);
+          const density = getBlockDensity(layout.durationMinutes);
+          const button = createElement(
+            'button',
+            `schedule-block schedule-block--${block.kind} schedule-block--${density}`,
+          );
+          const title = createElement('span', 'schedule-block__title', block.title);
+          const location = createElement('span', 'schedule-block__location', block.location);
+          const day = MOCK_WEEK[block.day];
+          const kindLabel = block.kind === 'course' ? '课程' : '日程';
+          const locationText = block.location ? `，${block.location}` : '';
+
+          button.type = 'button';
+          button.dataset.blockId = block.id;
+          button.style.top = `${layout.top}px`;
+          button.style.height = `${layout.height}px`;
+          button.style.setProperty('--order', String(index));
+          button.setAttribute(
+            'aria-label',
+            `${kindLabel}：${block.title}，${day.weekday} ${block.start} 到 ${block.end}${locationText}。打开详情`,
+          );
+          button.title = `${block.title}${block.location ? ` · ${block.location}` : ''} · ${block.start}–${block.end}`;
+          button.append(title);
+          if (block.location) button.append(location);
+          columns[block.day].append(button);
+        });
+      }
+
+      function renderDdl() {
+        const count = ddlItems.length;
+        ddlCount.textContent = String(count);
+        ddlCount.hidden = count === 0;
+        ddlHeading.setAttribute('aria-label', `本周 DDL，${count} 项待处理`);
+
+        todoBadge.textContent = String(count);
+        todoBadge.hidden = count === 0;
+        const todoTab = document.querySelector('[data-tab="todo"]');
+        todoTab.setAttribute('aria-label', count ? `待办，${count} 项未完成` : '待办');
+
+        ddlScroll.replaceChildren();
+        if (count === 0) {
+          ddlScroll.append(createElement('span', 'ddl-empty', '本周 DDL 已清空，去享受一个下午吧。'));
+          updateDayLabels();
+          return;
+        }
+
+        ddlItems.forEach((item) => {
+          const chip = createElement('button', `ddl-chip ddl-chip--${item.status}`);
+          const dot = createElement('span', 'ddl-chip__dot');
+          const copy = createElement('span', 'ddl-chip__copy');
+          const meta = createElement('span', 'ddl-chip__meta', item.meta);
+          const title = createElement('span', 'ddl-chip__title', item.title);
+
+          dot.setAttribute('aria-hidden', 'true');
+          chip.type = 'button';
+          chip.dataset.ddlId = item.id;
+          chip.setAttribute('aria-label', `${item.meta}，${item.title}。打开 DDL 详情`);
+          copy.append(meta, title);
+          chip.append(dot, copy);
+          chip.addEventListener('click', () => openDdlSheet(item.id));
+          ddlScroll.append(chip);
+        });
+
+        updateDayLabels();
+      }
+
+      function addSheetFact(label, value) {
+        const row = createElement('div', 'sheet-fact');
+        const term = createElement('dt', '', label);
+        const description = createElement('dd', '', value);
+        row.append(term, description);
+        sheetFacts.append(row);
+      }
+
+      function getFocusableElements(container) {
+        return [...container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+          .filter((element) => !element.disabled && !element.hidden && element.offsetParent !== null);
+      }
+
+      function handleDialogKeydown(event, container, onEscape) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          onEscape();
+          return;
+        }
+        if (event.key !== 'Tab') return;
+
+        const focusable = getFocusableElements(container);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      function handleSheetKeydown(event) {
+        handleDialogKeydown(event, detailSheet, closeSheet);
+      }
+
+      function handleFormKeydown(event) {
+        handleDialogKeydown(event, formSheet, () => closeFormSheet());
+      }
+
+      function openSheet({ kind, kindLabel, title, facts, primaryLabel, onPrimary }) {
+        hideToast();
+        const wasOpen = sheetIsOpen;
+        lastFocusedElement = wasOpen ? lastFocusedElement : document.activeElement;
+        sheetKind.textContent = kindLabel;
+        sheetKind.className = `sheet-kind sheet-kind--${kind}`;
+        sheetTitle.textContent = title;
+        sheetFacts.replaceChildren();
+        facts.forEach(([label, value]) => addSheetFact(label, value));
+        sheetPrimary.textContent = primaryLabel;
+        sheetPrimary.onclick = () => {
+          if (onPrimary) onPrimary();
+          else closeSheet();
+        };
+
+        if (wasOpen) return;
+
+        sheetIsOpen = true;
+        sheetLayer.hidden = false;
+        sheetLayer.classList.remove('is-open');
+        app.classList.add('is-sheet-open');
+        appContent.inert = true;
+        document.addEventListener('keydown', handleSheetKeydown);
+
+        window.requestAnimationFrame(() => {
+          sheetLayer.classList.add('is-open');
+          sheetClose.focus({ preventScroll: true });
+        });
+      }
+
+      function closeSheet(afterClose) {
+        if (!sheetIsOpen) return;
+        sheetIsOpen = false;
+        closeAfterTransition = afterClose ?? null;
+        sheetLayer.classList.remove('is-open');
+        document.removeEventListener('keydown', handleSheetKeydown);
+
+        const finish = () => {
+          sheetLayer.hidden = true;
+          app.classList.remove('is-sheet-open');
+          appContent.inert = false;
+          const target = lastFocusedElement
+            && lastFocusedElement !== document.body
+            && lastFocusedElement.isConnected
+            ? lastFocusedElement
+            : document.querySelector('[data-tab="schedule"]');
+          target?.focus({ preventScroll: true });
+          lastFocusedElement = null;
+          const callback = closeAfterTransition;
+          closeAfterTransition = null;
+          callback?.();
+        };
+
+        window.setTimeout(finish, reduceMotion.matches ? 0 : 280);
+      }
+
+      function clearFormError() {
+        formError.hidden = true;
+        formError.textContent = '';
+        formTitle.removeAttribute('aria-invalid');
+      }
+
+      function showFormError(message) {
+        formError.textContent = message;
+        formError.hidden = false;
+      }
+
+      function renderFormDays() {
+        const chips = MOCK_WEEK.map((day, index) => {
+          const chip = createElement('button', `form-day${day.isToday ? ' is-today' : ''}`);
+          const weekday = createElement('span', 'form-day__weekday', day.weekday);
+          const date = createElement('span', 'form-day__date', day.monthDay);
+
+          chip.type = 'button';
+          chip.dataset.formDay = String(index);
+          chip.setAttribute('role', 'radio');
+          chip.setAttribute('aria-checked', String(index === formDayIndex));
+          chip.setAttribute('aria-label', `${day.weekday} ${day.monthDay}${day.isToday ? '，今天' : ''}`);
+          chip.append(weekday, date);
+          chip.addEventListener('click', () => selectFormDay(index));
+          return chip;
+        });
+
+        formDays.replaceChildren(...chips);
+      }
+
+      function selectFormDay(index) {
+        formDayIndex = index;
+        formDays.querySelectorAll('.form-day').forEach((chip, chipIndex) => {
+          chip.setAttribute('aria-checked', String(chipIndex === index));
+        });
+        clearFormError();
+      }
+
+      function setFormType(type) {
+        formType = type;
+        formTypes.querySelectorAll('.form-type').forEach((button) => {
+          button.setAttribute('aria-checked', String(button.dataset.formType === type));
+        });
+
+        const isDdl = type === 'ddl';
+        formSheetTitle.textContent = FORM_TYPES[type].title;
+        formSubmit.textContent = FORM_TYPES[type].submit;
+        formDayLabel.textContent = isDdl ? '截止日期' : '日期';
+        formTimeField.hidden = isDdl;
+        formDueField.hidden = !isDdl;
+        formLocationField.hidden = isDdl;
+        clearFormError();
+      }
+
+      function bindRadioKeys(container, selector) {
+        container.addEventListener('keydown', (event) => {
+          let step = 0;
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') step = -1;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') step = 1;
+          if (!step) return;
+
+          const options = [...container.querySelectorAll(selector)];
+          const current = options.indexOf(document.activeElement);
+          if (current === -1) return;
+
+          event.preventDefault();
+          const next = options[(current + step + options.length) % options.length];
+          next.focus();
+          next.click();
+        });
+      }
+
+      function openFormSheet({
+        type = 'event',
+        dayIndex = TODAY_INDEX,
+        start = '09:00',
+        end = '10:00',
+      } = {}) {
+        if (formIsOpen) return;
+
+        hideToast();
+        formLastFocused = document.activeElement;
+        formTitle.value = '';
+        formLocation.value = '';
+        formStart.value = start;
+        formEnd.value = end;
+        formDue.value = '23:59';
+        formDayIndex = dayIndex;
+        renderFormDays();
+        setFormType(type);
+
+        formIsOpen = true;
+        formSheetLayer.hidden = false;
+        formSheetLayer.classList.remove('is-open');
+        app.classList.add('is-sheet-open');
+        appContent.inert = true;
+        document.addEventListener('keydown', handleFormKeydown);
+
+        window.requestAnimationFrame(() => {
+          formSheetLayer.classList.add('is-open');
+          formTitle.focus({ preventScroll: true });
+        });
+      }
+
+      function closeFormSheet(afterClose) {
+        if (!formIsOpen) return;
+        formIsOpen = false;
+        formCloseAfterTransition = afterClose ?? null;
+        formSheetLayer.classList.remove('is-open');
+        document.removeEventListener('keydown', handleFormKeydown);
+
+        const finish = () => {
+          formSheetLayer.hidden = true;
+          app.classList.remove('is-sheet-open');
+          appContent.inert = false;
+          const target = formLastFocused
+            && formLastFocused !== document.body
+            && formLastFocused.isConnected
+            ? formLastFocused
+            : addButton;
+          target?.focus({ preventScroll: true });
+          formLastFocused = null;
+          const callback = formCloseAfterTransition;
+          formCloseAfterTransition = null;
+          callback?.();
+        };
+
+        window.setTimeout(finish, reduceMotion.matches ? 0 : 280);
+      }
+
+      function saveFormEntry() {
+        const title = formTitle.value.trim();
+        clearFormError();
+
+        if (!title) {
+          formTitle.setAttribute('aria-invalid', 'true');
+          showFormError('给这个安排起个名字吧');
+          formTitle.focus();
+          return;
+        }
+
+        const day = MOCK_WEEK[formDayIndex];
+
+        if (formType === 'ddl') {
+          const dueTime = formDue.value || '23:59';
+          const status = getDdlStatus(day.iso, today.iso);
+          const item = {
+            id: `ddl-${Date.now()}`,
+            title,
+            meta: formatDdlMeta(day.iso, dueTime, today.iso),
+            status,
+            statusLabel: status === 'overdue' ? '已逾期' : status === 'today' ? '今天到期' : '本周内',
+            due: formatDueLabel(day.iso, dueTime),
+            dueDate: day.iso,
+            dueTime,
+          };
+
+          ddlItems = [...ddlItems, item].sort(compareDdl);
+          renderDdl();
+          closeFormSheet(() => {
+            showToast(`已添加 DDL「${title}」`);
+            ddlScroll
+              .querySelector(`[data-ddl-id="${item.id}"]`)
+              ?.scrollIntoView({
+                behavior: reduceMotion.matches ? 'auto' : 'smooth',
+                inline: 'nearest',
+                block: 'nearest',
+              });
+          });
+          return;
+        }
+
+        const start = formStart.value;
+        const end = formEnd.value;
+
+        if (!start || !end) {
+          showFormError('把开始和结束时间都填上吧');
+          formStart.focus();
+          return;
+        }
+
+        const timeError = getTimeRangeError(start, end);
+        if (timeError) {
+          showFormError(timeError);
+          formStart.focus();
+          return;
+        }
+
+        const conflict = findScheduleConflict(scheduleBlocks, { day: formDayIndex, start, end });
+        if (conflict) {
+          showFormError(`这个时间和「${conflict.title}」重叠了，换个时间吧`);
+          formStart.focus();
+          return;
+        }
+
+        const block = {
+          id: `user-${Date.now()}`,
+          day: formDayIndex,
+          kind: formType === 'course' ? 'course' : 'event',
+          title,
+          location: formLocation.value.trim(),
+          start,
+          end,
+        };
+
+        scheduleBlocks.push(block);
+        renderScheduleBlocks();
+        closeFormSheet(() => {
+          showToast(`已添加「${title}」`);
+          const element = weekDays.querySelector(`[data-block-id="${block.id}"]`);
+          element?.scrollIntoView({
+            behavior: reduceMotion.matches ? 'auto' : 'smooth',
+            block: 'nearest',
+          });
+          element?.classList.add('is-new');
+          window.setTimeout(() => element?.classList.remove('is-new'), 1800);
+        });
+      }
+
+      function formatTimeRange(block, day) {
+        return `${day.weekday} ${block.start}–${block.end}`;
+      }
+
+      function openBlockSheet(block) {
+        const day = MOCK_WEEK[block.day];
+        const duration = parseTimeToMinutes(block.end) - parseTimeToMinutes(block.start);
+        openSheet({
+          kind: block.kind,
+          kindLabel: block.kind === 'course' ? '课程' : '日程',
+          title: block.title,
+          facts: [
+            ['时间', formatTimeRange(block, day)],
+            ['时长', formatDuration(duration)],
+            ['地点', block.location || '未填写'],
+          ],
+          primaryLabel: '知道了',
+        });
+      }
+
+      function openDdlSheet(id) {
+        const item = ddlItems.find((entry) => entry.id === id);
+        if (!item) return;
+        openSheet({
+          kind: 'ddl',
+          kindLabel: 'DDL',
+          title: item.title,
+          facts: [
+            ['截止', item.due],
+            ['状态', item.statusLabel],
+          ],
+          primaryLabel: '标记完成',
+          onPrimary: () => completeDdl(id),
+        });
+      }
+
+      function completeDdl(id) {
+        const item = ddlItems.find((entry) => entry.id === id);
+        if (!item) {
+          closeSheet();
+          return;
+        }
+        ddlItems = ddlItems.filter((entry) => entry.id !== id);
+        renderDdl();
+        const message = ddlItems.length ? `已完成「${item.title}」` : '本周 DDL 已清空，做得好。';
+        closeSheet(() => showToast(message));
+      }
+
+      weekDays.addEventListener('pointerdown', (event) => {
+        gridPointerStart = { x: event.clientX, y: event.clientY };
+      });
+
+      weekDays.addEventListener('click', (event) => {
+        const pointerStart = gridPointerStart;
+        gridPointerStart = null;
+
+        const blockButton = event.target.closest('.schedule-block');
+        if (blockButton) {
+          const block = scheduleBlocks.find((entry) => entry.id === blockButton.dataset.blockId);
+          if (block) openBlockSheet(block);
+          return;
+        }
+
+        const column = event.target.closest('.day-column');
+        if (!column) return;
+
+        if (pointerStart) {
+          const moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+          if (moved > 10) return;
+        }
+
+        const range = getQuickAddRange(event.clientY - column.getBoundingClientRect().top);
+        openFormSheet({
+          dayIndex: Number(column.dataset.day),
+          start: range.start,
+          end: range.end,
+        });
+      });
+
+      document.querySelectorAll('.tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const name = tab.dataset.tab;
+          if (name === 'schedule') {
+            showToast('已经在本周课表');
+            return;
+          }
+          if (name === 'todo') {
+            showToast('完整的待办页将在后续原型中展开');
+            return;
+          }
+          showToast('课表图像识别导入会放在「我的」页');
+        });
+      });
+
+      addButton.addEventListener('click', () => {
+        openFormSheet({ dayIndex: TODAY_INDEX });
+      });
+
+      formTypes.addEventListener('click', (event) => {
+        const button = event.target.closest('.form-type');
+        if (button) setFormType(button.dataset.formType);
+      });
+
+      bindRadioKeys(formTypes, '.form-type');
+      bindRadioKeys(formDays, '.form-day');
+
+      addForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        saveFormEntry();
+      });
+
+      formTitle.addEventListener('input', () => {
+        if (formTitle.getAttribute('aria-invalid') === 'true') {
+          formTitle.removeAttribute('aria-invalid');
+          clearFormError();
+        }
+      });
+
+      formSheetBackdrop.addEventListener('click', () => closeFormSheet());
+      formSheetClose.addEventListener('click', () => closeFormSheet());
+
+      sheetBackdrop.addEventListener('click', () => closeSheet());
+      sheetClose.addEventListener('click', () => closeSheet());
+
+      renderDateStrip();
+      renderTimeRail();
+      renderGridLines();
+      renderWeekDays();
+      renderScheduleBlocks();
+      renderDdl();
+    })();
+  </script>
+</body>
+</html>
