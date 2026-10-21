@@ -277,13 +277,21 @@
       color: var(--ink-muted);
     }
 
-    .day-dot {
+    .day-ddl-badge {
       position: absolute;
-      bottom: 4px;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--accent-soft);
+      bottom: 1px;
+      display: grid;
+      min-width: 12px;
+      height: 12px;
+      padding: 0 3px;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(139, 104, 72, 0.14);
+      color: #77563a;
+      font-size: 8px;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
 
     .day-cell.is-today {
@@ -300,8 +308,15 @@
       opacity: 0.82;
     }
 
-    .day-cell.is-today .day-dot {
-      background: #fff1df;
+    .day-cell.is-today .day-ddl-badge {
+      background: rgba(255, 246, 235, 0.94);
+      box-shadow: 0 1px 2px rgba(87, 42, 24, 0.16);
+      color: var(--accent-deep);
+    }
+
+    .day-cell.has-overdue-ddl .day-ddl-badge {
+      background: var(--overdue-bg);
+      color: var(--overdue);
     }
 
     .ddl-card {
@@ -480,6 +495,7 @@
       position: relative;
       flex: 1 1 auto;
       min-height: 0;
+      padding-bottom: 88px;
       overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -491,8 +507,321 @@
       display: none;
     }
 
-    .app.is-sheet-open .timetable-scroll {
+    .app.is-sheet-open .timetable-scroll,
+    .app.is-sheet-open .todo-scroll {
       overflow: hidden;
+    }
+
+    .app.is-todo .week-row,
+    .app.is-todo .date-strip,
+    .app.is-todo .ddl-card {
+      display: none;
+    }
+
+    .todo-view {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+    }
+
+    .todo-header {
+      flex: none;
+      padding: 8px 22px 15px;
+      background:
+        radial-gradient(90% 160% at 88% -30%, rgba(255, 255, 255, 0.72), transparent 62%),
+        linear-gradient(180deg, #f8ecdc 0%, var(--paper) 100%);
+    }
+
+    .todo-eyebrow {
+      margin: 0 0 6px;
+      color: var(--ink-muted);
+      font-size: 10.5px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .todo-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 27px;
+      font-weight: 760;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .todo-summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 7px 0 0;
+      color: var(--ink-muted);
+      font-size: 11.5px;
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .todo-summary.is-overdue::before {
+      content: "";
+      flex: none;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--overdue);
+    }
+
+    .todo-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 4px 18px 88px;
+      scrollbar-width: none;
+    }
+
+    .todo-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .todo-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .todo-group__heading {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 0 2px 8px;
+      color: var(--ink-muted);
+      font-size: 10.5px;
+      font-weight: 750;
+      letter-spacing: 0.07em;
+      line-height: 1.2;
+    }
+
+    .todo-group__count {
+      display: inline-grid;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 5px;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(143, 112, 77, 0.1);
+      color: var(--ink-soft);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .todo-group--overdue .todo-group__heading {
+      color: var(--overdue);
+    }
+
+    .todo-group--overdue .todo-group__count {
+      background: var(--overdue-bg);
+      color: var(--overdue);
+    }
+
+    .todo-group--today .todo-group__heading {
+      color: var(--accent);
+    }
+
+    .todo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      min-height: 60px;
+      padding: 12px 11px 12px 12px;
+      border: 1px solid rgba(143, 112, 77, 0.16);
+      border-radius: 15px;
+      background: var(--paper-bright);
+      box-shadow: 0 5px 16px rgba(72, 48, 26, 0.035);
+    }
+
+    .todo-item--overdue {
+      border-color: rgba(164, 61, 43, 0.22);
+      background: linear-gradient(180deg, #fffaf3 0%, #fdf0e9 100%);
+    }
+
+    .todo-item--today {
+      border-color: rgba(169, 80, 52, 0.24);
+    }
+
+    .todo-check {
+      position: relative;
+      flex: none;
+      width: 26px;
+      height: 26px;
+      margin-top: 4px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid rgba(143, 112, 77, 0.36);
+      border-radius: 50%;
+      background: var(--paper-bright);
+      color: var(--accent);
+      transition:
+        border-color 150ms ease,
+        background-color 150ms ease,
+        transform 150ms ease;
+    }
+
+    .todo-check::after {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: 50%;
+    }
+
+    .todo-check svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0;
+      transform: scale(0.82);
+      transition:
+        opacity 150ms ease,
+        transform 150ms ease;
+    }
+
+    .todo-check:hover svg,
+    .todo-check:focus-visible svg {
+      opacity: 0.55;
+      transform: none;
+    }
+
+    .todo-check:hover,
+    .todo-check:focus-visible {
+      border-color: var(--accent);
+      background: #fff8ee;
+    }
+
+    .todo-check:active {
+      transform: scale(0.92);
+    }
+
+    .todo-item__body {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .todo-item__copy {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .todo-item__title {
+      color: var(--ink);
+      font-size: 13.5px;
+      font-weight: 650;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .todo-item__meta {
+      color: var(--ink-muted);
+      font-size: 10.5px;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .todo-item--overdue .todo-item__meta {
+      color: var(--overdue);
+      font-weight: 650;
+    }
+
+    .todo-item--today .todo-item__meta {
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    .todo-item__chevron {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      color: var(--ink-faint);
+      opacity: 0.62;
+    }
+
+    .todo-item__chevron svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .todo-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 46px 20px 0;
+      text-align: center;
+    }
+
+    .todo-empty__icon {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      margin-bottom: 15px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--sage);
+      color: #5f6a49;
+      box-shadow: 0 8px 20px rgba(87, 96, 63, 0.1);
+    }
+
+    .todo-empty__icon svg {
+      width: 27px;
+      height: 27px;
+    }
+
+    .todo-empty__title {
+      margin: 0 0 5px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .todo-empty__copy {
+      margin: 0 0 18px;
+      color: var(--ink-muted);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .todo-empty__button {
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 8px 18px rgba(124, 59, 35, 0.2);
+      color: #fff8ee;
+      font-size: 12.5px;
+      font-weight: 650;
     }
 
     .timetable {
@@ -651,6 +980,85 @@
     .schedule-block--short .schedule-block__location,
     .schedule-block--medium .schedule-block__location {
       display: none;
+    }
+
+    .ddl-marker {
+      position: absolute;
+      z-index: 4;
+      left: 2px;
+      right: 2px;
+      height: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+      overflow: hidden;
+      padding: 2px 4px;
+      border: 1px dashed rgba(169, 80, 52, 0.5);
+      border-left: 2px solid rgba(169, 80, 52, 0.72);
+      border-radius: 8px;
+      background: rgba(255, 250, 241, 0.97);
+      box-shadow: 0 2px 7px rgba(98, 65, 36, 0.08);
+      text-align: left;
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        border-color 160ms ease,
+        background-color 160ms ease;
+      animation: block-in 320ms both;
+      animation-delay: calc(var(--order, 0) * 18ms);
+    }
+
+    .ddl-marker:hover {
+      z-index: 5;
+      transform: translateY(-1px);
+      border-color: rgba(169, 80, 52, 0.68);
+      background: #fffaf1;
+      box-shadow: 0 6px 16px rgba(109, 73, 39, 0.14);
+    }
+
+    .ddl-marker:active {
+      transform: scale(0.985);
+    }
+
+    .ddl-marker--today {
+      border-color: rgba(169, 80, 52, 0.62);
+      border-left-color: var(--accent);
+      background: #fff5e9;
+    }
+
+    .ddl-marker--overdue {
+      border-color: rgba(164, 61, 43, 0.46);
+      border-left-color: var(--overdue);
+      background: var(--overdue-bg);
+    }
+
+    .ddl-marker__time {
+      overflow: hidden;
+      color: var(--accent-deep);
+      font-size: 7.5px;
+      font-weight: 720;
+      line-height: 1.1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ddl-marker--overdue .ddl-marker__time {
+      color: var(--overdue);
+    }
+
+    .ddl-marker__title {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      font-size: 8.5px;
+      font-weight: 650;
+      line-height: 1.12;
+      letter-spacing: 0.005em;
+      overflow-wrap: anywhere;
     }
 
     .fab {
@@ -1329,6 +1737,28 @@
         </section>
       </div>
 
+      <section class="todo-view" id="todoView" aria-labelledby="todoTitle" hidden>
+        <header class="todo-header">
+          <p class="todo-eyebrow" id="todoWeekRange">第 6 周 · 10/19 – 10/25</p>
+          <h1 class="todo-title" id="todoTitle">待办</h1>
+          <p class="todo-summary" id="todoSummary"></p>
+        </header>
+        <div class="todo-scroll" id="todoScroll">
+          <div class="todo-groups" id="todoGroups"></div>
+          <div class="todo-empty" id="todoEmpty" hidden>
+            <span class="todo-empty__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8.5"></circle>
+                <path d="m8.2 12.3 2.6 2.6 5.2-5.6"></path>
+              </svg>
+            </span>
+            <h2 class="todo-empty__title">本周待办已清空</h2>
+            <p class="todo-empty__copy">新的截止日期随时可以加进来。</p>
+            <button class="todo-empty__button" id="todoEmptyAdd" type="button">添加 DDL</button>
+          </div>
+        </div>
+      </section>
+
       <button class="fab" id="addButton" type="button" aria-label="添加日程或 DDL">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <path d="M12 5v14"></path>
@@ -1443,6 +1873,7 @@
     const DEFAULT_DAY_START = 8 * 60;
     const DEFAULT_HOUR_HEIGHT = 44;
     const DEFAULT_BLOCK_GAP = 2;
+    const DEFAULT_DDL_MARKER_HEIGHT = 34;
 
     function roundToHundredth(value) {
       return Math.round(value * 100) / 100;
@@ -1570,6 +2001,60 @@
       const right = `${b.dueDate} ${b.dueTime ?? '23:59'}`;
       return left.localeCompare(right);
     }
+
+    function groupDdlItems(items, todayIso) {
+      const groups = { overdue: [], today: [], upcoming: [] };
+
+      items.forEach((item) => {
+        groups[getDdlStatus(item.dueDate, todayIso)].push(item);
+      });
+
+      groups.overdue.sort(compareDdl);
+      groups.today.sort(compareDdl);
+      groups.upcoming.sort(compareDdl);
+      return groups;
+    }
+
+    function getDdlWeekMarkers(items, weekDates, options = {}) {
+      const dayStartMinutes = options.dayStartMinutes ?? DEFAULT_DAY_START;
+      const dayEndMinutes = options.dayEndMinutes ?? DEFAULT_DAY_END;
+      const hourHeight = options.hourHeight ?? DEFAULT_HOUR_HEIGHT;
+      const markerHeight = options.markerHeight ?? DEFAULT_DDL_MARKER_HEIGHT;
+      const latestTimedMinutes = dayEndMinutes - (markerHeight / hourHeight) * 60;
+      const endStackByDay = new Map();
+      const markers = [];
+
+      [...items].sort(compareDdl).forEach((item) => {
+        const dayIndex = weekDates.indexOf(item.dueDate);
+        if (dayIndex === -1) return;
+
+        const dueTime = item.dueTime ?? '23:59';
+        const minutes = parseTimeToMinutes(dueTime);
+
+        if (minutes >= dayStartMinutes && minutes <= latestTimedMinutes) {
+          markers.push({
+            id: item.id,
+            dayIndex,
+            mode: 'timed',
+            minutes,
+            top: roundToHundredth(((minutes - dayStartMinutes) / 60) * hourHeight),
+          });
+          return;
+        }
+
+        const stackIndex = endStackByDay.get(dayIndex) ?? 0;
+        endStackByDay.set(dayIndex, stackIndex + 1);
+        markers.push({
+          id: item.id,
+          dayIndex,
+          mode: 'end-of-day',
+          minutes,
+          stackIndex,
+        });
+      });
+
+      return markers;
+    }
   </script>
 
   <script>
@@ -1579,6 +2064,9 @@
       const HOUR_HEIGHT = 44;
       const DAY_START_HOUR = 8;
       const DAY_END_HOUR = 21;
+      const DDL_MARKER_HEIGHT = 34;
+      const DDL_MARKER_GAP = 4;
+      const DDL_MARKER_BOTTOM = 4;
       const MOCK_WEEK = [
         { iso: '2026-10-19', monthDay: '10/19', weekday: '周一', isToday: true },
         { iso: '2026-10-20', monthDay: '10/20', weekday: '周二', isToday: false },
@@ -1661,6 +2149,14 @@
       const ddlCount = document.getElementById('ddlCount');
       const ddlHeading = document.getElementById('ddlHeading');
       const todoBadge = document.getElementById('todoBadge');
+      const timetableScroll = document.getElementById('timetableScroll');
+      const todoView = document.getElementById('todoView');
+      const todoGroups = document.getElementById('todoGroups');
+      const todoEmpty = document.getElementById('todoEmpty');
+      const todoEmptyAdd = document.getElementById('todoEmptyAdd');
+      const todoSummary = document.getElementById('todoSummary');
+      const todoWeekRange = document.getElementById('todoWeekRange');
+      const tabs = [...document.querySelectorAll('.tab')];
       const sheetLayer = document.getElementById('sheetLayer');
       const sheetBackdrop = document.getElementById('sheetBackdrop');
       const detailSheet = document.getElementById('detailSheet');
@@ -1703,12 +2199,24 @@
       let formType = 'event';
       let formDayIndex = TODAY_INDEX;
       let gridPointerStart = null;
+      let activeView = 'schedule';
 
       const FORM_TYPES = {
         event: { title: '新建日程', submit: '添加日程' },
         course: { title: '新建课程', submit: '添加课程' },
         ddl: { title: '新建 DDL', submit: '添加 DDL' },
       };
+
+      const TODO_GROUPS = [
+        { key: 'overdue', label: '已逾期' },
+        { key: 'today', label: '今天' },
+        { key: 'upcoming', label: '本周' },
+      ];
+
+      const TODO_CHECK_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7.5"></path></svg>';
+      const TODO_CHEVRON_ICON =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>';
 
       function createElement(tagName, className, text) {
         const element = document.createElement(tagName);
@@ -1755,14 +2263,14 @@
           const cell = createElement('div', 'day-cell');
           const date = createElement('span', 'day-date', day.monthDay);
           const weekday = createElement('span', 'day-weekday', day.weekday);
-          const dot = createElement('span', 'day-dot');
-          dot.hidden = true;
-          dot.setAttribute('aria-hidden', 'true');
+          const badge = createElement('span', 'day-ddl-badge');
+          badge.hidden = true;
+          badge.setAttribute('aria-hidden', 'true');
 
           cell.dataset.date = day.iso;
           cell.dataset.weekday = day.weekday;
           cell.setAttribute('role', 'listitem');
-          cell.append(date, weekday, dot);
+          cell.append(date, weekday, badge);
           if (day.isToday) {
             cell.classList.add('is-today');
             cell.setAttribute('aria-current', 'date');
@@ -1774,13 +2282,16 @@
       function updateDayLabels() {
         dateStrip.querySelectorAll('.day-cell').forEach((cell) => {
           const day = MOCK_WEEK.find((item) => item.iso === cell.dataset.date);
-          const dot = cell.querySelector('.day-dot');
+          const badge = cell.querySelector('.day-ddl-badge');
           const dueCount = ddlItems.filter((item) => item.dueDate === day.iso).length;
+          const dueStatus = dueCount ? getDdlStatus(day.iso, today.iso) : '';
           const labels = [day.monthDay, day.weekday];
           if (day.isToday) labels.push('今天');
           if (dueCount) labels.push(`${dueCount} 个 DDL`);
           cell.setAttribute('aria-label', labels.join('，'));
-          dot.hidden = dueCount === 0;
+          cell.classList.toggle('has-overdue-ddl', dueStatus === 'overdue');
+          badge.textContent = String(dueCount);
+          badge.hidden = dueCount === 0;
         });
       }
 
@@ -1858,6 +2369,56 @@
         });
       }
 
+      function renderDdlMarkers() {
+        const columns = [...weekDays.querySelectorAll('.day-column')];
+        columns.forEach((column) => {
+          column.querySelectorAll('.ddl-marker').forEach((marker) => marker.remove());
+        });
+
+        const markers = getDdlWeekMarkers(
+          ddlItems,
+          MOCK_WEEK.map((day) => day.iso),
+          {
+            dayStartMinutes: DAY_START_HOUR * 60,
+            dayEndMinutes: DAY_END_HOUR * 60,
+            hourHeight: HOUR_HEIGHT,
+            markerHeight: DDL_MARKER_HEIGHT,
+          },
+        );
+
+        markers.forEach((marker, index) => {
+          const item = ddlItems.find((entry) => entry.id === marker.id);
+          if (!item) return;
+
+          const dueTime = item.dueTime ?? '23:59';
+          const button = createElement('button', `ddl-marker ddl-marker--${marker.mode}`);
+          const time = createElement('span', 'ddl-marker__time', `${dueTime} 截止`);
+          const title = createElement('span', 'ddl-marker__title', item.title);
+
+          if (item.status === 'overdue') button.classList.add('ddl-marker--overdue');
+          if (item.status === 'today') button.classList.add('ddl-marker--today');
+          button.type = 'button';
+          button.dataset.gridDdlId = item.id;
+          button.style.setProperty('--order', String(index));
+          button.setAttribute(
+            'aria-label',
+            `DDL：${item.title}，${formatDueLabel(item.dueDate, dueTime)}。打开详情`,
+          );
+          button.title = `${item.title} · 截止 ${dueTime}`;
+
+          if (marker.mode === 'timed') {
+            button.style.top = `${marker.top}px`;
+          } else {
+            const offset = DDL_MARKER_BOTTOM
+              + marker.stackIndex * (DDL_MARKER_HEIGHT + DDL_MARKER_GAP);
+            button.style.bottom = `${offset}px`;
+          }
+
+          button.append(time, title);
+          columns[marker.dayIndex].append(button);
+        });
+      }
+
       function renderDdl() {
         const count = ddlItems.length;
         ddlCount.textContent = String(count);
@@ -1871,8 +2432,10 @@
 
         ddlScroll.replaceChildren();
         if (count === 0) {
-          ddlScroll.append(createElement('span', 'ddl-empty', '本周 DDL 已清空，去享受一个下午吧。'));
+          ddlScroll.append(createElement('span', 'ddl-empty', '已清空，去享受一个下午吧。'));
           updateDayLabels();
+          renderDdlMarkers();
+          renderTodo();
           return;
         }
 
@@ -1894,6 +2457,77 @@
         });
 
         updateDayLabels();
+        renderDdlMarkers();
+        renderTodo();
+      }
+
+      function renderTodo() {
+        const groups = groupDdlItems(ddlItems, today.iso);
+        const count = ddlItems.length;
+        const overdueCount = groups.overdue.length;
+
+        todoWeekRange.textContent =
+          `第 6 周 · ${MOCK_WEEK[0].monthDay} – ${MOCK_WEEK[MOCK_WEEK.length - 1].monthDay}`;
+        todoSummary.textContent = count === 0
+          ? '本周没有待办'
+          : overdueCount
+            ? `${overdueCount} 项已逾期 · ${count - overdueCount} 项待处理`
+            : `${count} 项待处理`;
+        todoSummary.classList.toggle('is-overdue', overdueCount > 0);
+
+        todoGroups.replaceChildren();
+        TODO_GROUPS.forEach(({ key, label }) => {
+          const items = groups[key];
+          if (!items.length) return;
+
+          const section = createElement('section', `todo-group todo-group--${key}`);
+          const heading = createElement('h2', 'todo-group__heading');
+          heading.id = `todoGroup-${key}`;
+          section.setAttribute('aria-labelledby', heading.id);
+          heading.append(
+            createElement('span', '', key === 'today' ? `${label} · ${today.monthDay}` : label),
+            createElement('span', 'todo-group__count', String(items.length)),
+          );
+
+          const list = createElement('ul', 'todo-list');
+          items.forEach((item) => {
+            const row = createElement('li', `todo-item todo-item--${item.status}`);
+
+            const check = createElement('button', 'todo-check');
+            check.type = 'button';
+            check.dataset.completeDdl = item.id;
+            check.setAttribute('aria-label', `完成「${item.title}」`);
+            check.innerHTML = TODO_CHECK_ICON;
+
+            const body = createElement('button', 'todo-item__body');
+            body.type = 'button';
+            body.dataset.ddlId = item.id;
+            body.setAttribute(
+              'aria-label',
+              `${item.title}，${item.meta}，截止 ${item.due}。打开详情`,
+            );
+
+            const copy = createElement('span', 'todo-item__copy');
+            copy.append(
+              createElement('span', 'todo-item__title', item.title),
+              createElement('span', 'todo-item__meta', item.meta),
+            );
+
+            const chevron = createElement('span', 'todo-item__chevron');
+            chevron.setAttribute('aria-hidden', 'true');
+            chevron.innerHTML = TODO_CHEVRON_ICON;
+
+            body.append(copy, chevron);
+            row.append(check, body);
+            list.append(row);
+          });
+
+          section.append(heading, list);
+          todoGroups.append(section);
+        });
+
+        todoGroups.hidden = count === 0;
+        todoEmpty.hidden = count !== 0;
       }
 
       function addSheetFact(label, value) {
@@ -1984,7 +2618,8 @@
             && lastFocusedElement !== document.body
             && lastFocusedElement.isConnected
             ? lastFocusedElement
-            : document.querySelector('[data-tab="schedule"]');
+            : (document.querySelector('.tab.is-active')
+              ?? document.querySelector('[data-tab="schedule"]'));
           target?.focus({ preventScroll: true });
           lastFocusedElement = null;
           const callback = closeAfterTransition;
@@ -2156,13 +2791,14 @@
           renderDdl();
           closeFormSheet(() => {
             showToast(`已添加 DDL「${title}」`);
-            ddlScroll
-              .querySelector(`[data-ddl-id="${item.id}"]`)
-              ?.scrollIntoView({
-                behavior: reduceMotion.matches ? 'auto' : 'smooth',
-                inline: 'nearest',
-                block: 'nearest',
-              });
+            const target = activeView === 'todo'
+              ? todoGroups.querySelector(`[data-ddl-id="${item.id}"]`)
+              : ddlScroll.querySelector(`[data-ddl-id="${item.id}"]`);
+            target?.scrollIntoView({
+              behavior: reduceMotion.matches ? 'auto' : 'smooth',
+              inline: 'nearest',
+              block: 'nearest',
+            });
           });
           return;
         }
@@ -2202,6 +2838,7 @@
 
         scheduleBlocks.push(block);
         renderScheduleBlocks();
+        renderDdlMarkers();
         closeFormSheet(() => {
           showToast(`已添加「${title}」`);
           const element = weekDays.querySelector(`[data-block-id="${block.id}"]`);
@@ -2262,6 +2899,61 @@
         closeSheet(() => showToast(message));
       }
 
+      function completeDdlFromTodo(id, trigger) {
+        const checks = [...todoGroups.querySelectorAll('[data-complete-ddl]')];
+        const index = Math.max(checks.indexOf(trigger), 0);
+        const item = ddlItems.find((entry) => entry.id === id);
+        if (!item) return;
+
+        ddlItems = ddlItems.filter((entry) => entry.id !== id);
+        renderDdl();
+        showToast(
+          ddlItems.length ? `已完成「${item.title}」` : '本周待办已清空，做得好。',
+        );
+
+        const remaining = [...todoGroups.querySelectorAll('[data-complete-ddl]')];
+        const next = remaining[Math.min(index, remaining.length - 1)];
+        (next ?? todoEmptyAdd).focus({ preventScroll: true });
+      }
+
+      function syncTabState() {
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.tab === activeView;
+          tab.classList.toggle('is-active', isActive);
+          if (isActive) tab.setAttribute('aria-current', 'page');
+          else tab.removeAttribute('aria-current');
+        });
+      }
+
+      function setActiveView(view) {
+        activeView = view;
+        const isTodo = view === 'todo';
+
+        hideToast();
+        app.classList.toggle('is-todo', isTodo);
+        timetableScroll.hidden = isTodo;
+        todoView.hidden = !isTodo;
+        document.title = isTodo ? '小排 · 待办' : '小排 · 第 6 周';
+        addButton.setAttribute('aria-label', isTodo ? '添加 DDL' : '添加日程或 DDL');
+        syncTabState();
+        if (isTodo) renderTodo();
+      }
+
+      todoGroups.addEventListener('click', (event) => {
+        const check = event.target.closest('[data-complete-ddl]');
+        if (check) {
+          completeDdlFromTodo(check.dataset.completeDdl, check);
+          return;
+        }
+
+        const row = event.target.closest('[data-ddl-id]');
+        if (row) openDdlSheet(row.dataset.ddlId);
+      });
+
+      todoEmptyAdd.addEventListener('click', () => {
+        openFormSheet({ type: 'ddl', dayIndex: TODAY_INDEX });
+      });
+
       weekDays.addEventListener('pointerdown', (event) => {
         gridPointerStart = { x: event.clientX, y: event.clientY };
       });
@@ -2269,6 +2961,12 @@
       weekDays.addEventListener('click', (event) => {
         const pointerStart = gridPointerStart;
         gridPointerStart = null;
+
+        const ddlMarker = event.target.closest('.ddl-marker');
+        if (ddlMarker) {
+          openDdlSheet(ddlMarker.dataset.gridDdlId);
+          return;
+        }
 
         const blockButton = event.target.closest('.schedule-block');
         if (blockButton) {
@@ -2293,23 +2991,26 @@
         });
       });
 
-      document.querySelectorAll('.tab').forEach((tab) => {
+      tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const name = tab.dataset.tab;
-          if (name === 'schedule') {
-            showToast('已经在本周课表');
+          if (name === 'me') {
+            showToast('「我的」页将在后续原型中展开');
             return;
           }
-          if (name === 'todo') {
-            showToast('完整的待办页将在后续原型中展开');
+          if (name === activeView) {
+            showToast(name === 'schedule' ? '已经在本周课表' : '已经在待办页');
             return;
           }
-          showToast('课表图像识别导入会放在「我的」页');
+          setActiveView(name);
         });
       });
 
       addButton.addEventListener('click', () => {
-        openFormSheet({ dayIndex: TODAY_INDEX });
+        openFormSheet({
+          type: activeView === 'todo' ? 'ddl' : 'event',
+          dayIndex: TODAY_INDEX,
+        });
       });
 
       formTypes.addEventListener('click', (event) => {
