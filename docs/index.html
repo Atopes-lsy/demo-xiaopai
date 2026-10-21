@@ -260,6 +260,39 @@
       justify-content: center;
       gap: 1px;
       color: var(--ink-soft);
+      cursor: pointer;
+      transition: background-color 160ms ease;
+    }
+
+    .day-cell::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      width: 0;
+      height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 3.5px solid currentColor;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    .day-cell:not(.is-today):hover {
+      background: rgba(169, 80, 52, 0.07);
+    }
+
+    .day-cell:hover::after,
+    .day-cell:focus-visible::after,
+    .day-cell.is-expanded::after {
+      opacity: 0.5;
+    }
+
+    .day-cell.is-expanded::after {
+      transform: rotate(180deg);
     }
 
     .day-date {
@@ -308,6 +341,10 @@
       opacity: 0.82;
     }
 
+    .day-cell.is-today::after {
+      border-top-color: #fff8ee;
+    }
+
     .day-cell.is-today .day-ddl-badge {
       background: rgba(255, 246, 235, 0.94);
       box-shadow: 0 1px 2px rgba(87, 42, 24, 0.16);
@@ -319,43 +356,36 @@
       color: var(--overdue);
     }
 
-    .ddl-card {
+    .day-ddl-panel {
       position: relative;
       z-index: 1;
-      flex: none;
-      height: 48px;
-      margin: 8px 12px;
-      padding: 0 9px 0 10px;
-      display: flex;
-      align-items: center;
-      gap: 9px;
+      margin: 2px 12px 10px;
+      padding: 10px 12px 11px;
       border: 1px solid rgba(169, 134, 96, 0.26);
       border-radius: 14px;
-      background: rgba(255, 250, 242, 0.76);
-      box-shadow: 0 8px 22px rgba(103, 68, 39, 0.055);
+      background: rgba(255, 250, 242, 0.9);
+      box-shadow: 0 8px 22px rgba(103, 68, 39, 0.06);
       backdrop-filter: blur(12px);
+      animation: day-panel-in 180ms ease both;
     }
 
-    .ddl-heading {
-      flex: none;
+    .day-ddl-panel__head {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding-left: 1px;
-      color: #70543d;
-      font-size: 10.5px;
-      font-weight: 650;
-      letter-spacing: 0.015em;
-      white-space: nowrap;
+      gap: 7px;
+      min-height: 16px;
+      margin-bottom: 7px;
     }
 
-    .ddl-heading svg {
-      width: 13px;
-      height: 13px;
-      color: var(--accent);
+    .day-ddl-panel__title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 680;
+      letter-spacing: 0.01em;
     }
 
-    .ddl-count {
+    .day-ddl-panel__count {
       display: grid;
       min-width: 16px;
       height: 16px;
@@ -370,67 +400,29 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .ddl-scroll-area {
-      position: relative;
-      flex: 1;
-      min-width: 0;
-      height: 36px;
-    }
-
-    .ddl-scroll-area::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 14px;
-      background: linear-gradient(90deg, transparent, rgba(255, 250, 242, 0.96));
-      pointer-events: none;
-    }
-
-    .ddl-scroll {
+    .day-ddl-list {
       display: flex;
-      gap: 6px;
-      height: 100%;
-      padding-right: 11px;
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      scrollbar-width: none;
+      flex-direction: column;
+      gap: 3px;
     }
 
-    .ddl-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    .ddl-chip {
-      flex: none;
-      height: 36px;
+    .day-ddl-row {
+      width: 100%;
+      min-height: 30px;
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 0 9px;
-      border: 1px solid rgba(177, 143, 105, 0.23);
-      border-radius: 9px;
-      background: var(--paper-bright);
+      gap: 8px;
+      padding: 0 6px;
+      border-radius: 8px;
       text-align: left;
-      transition:
-        border-color 160ms ease,
-        background-color 160ms ease,
-        transform 160ms ease;
+      transition: background-color 150ms ease;
     }
 
-    .ddl-chip:hover {
-      border-color: rgba(169, 80, 52, 0.3);
-      background: #fffaf1;
-      transform: translateY(-1px);
+    .day-ddl-row:hover {
+      background: rgba(169, 80, 52, 0.06);
     }
 
-    .ddl-chip--overdue {
-      border-color: rgba(164, 61, 43, 0.18);
-      background: var(--overdue-bg);
-    }
-
-    .ddl-chip__dot {
+    .day-ddl-row__dot {
       flex: none;
       width: 5px;
       height: 5px;
@@ -438,57 +430,63 @@
       background: var(--ink-faint);
     }
 
-    .ddl-chip--overdue .ddl-chip__dot {
+    .day-ddl-row--overdue .day-ddl-row__dot {
       background: var(--overdue);
     }
 
-    .ddl-chip--today .ddl-chip__dot {
+    .day-ddl-row--today .day-ddl-row__dot {
       background: var(--accent);
     }
 
-    .ddl-chip__copy {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      min-width: 0;
-      white-space: nowrap;
-    }
-
-    .ddl-chip__meta {
+    .day-ddl-row__time {
+      flex: none;
+      min-width: 30px;
       color: var(--ink-muted);
       font-size: 9px;
-      line-height: 1.15;
-      font-weight: 500;
+      font-weight: 600;
+      line-height: 1.2;
       font-variant-numeric: tabular-nums;
     }
 
-    .ddl-chip--overdue .ddl-chip__meta {
+    .day-ddl-row--overdue .day-ddl-row__time {
       color: var(--overdue);
-      font-weight: 650;
     }
 
-    .ddl-chip--today .ddl-chip__meta {
+    .day-ddl-row--today .day-ddl-row__time {
       color: var(--accent);
-      font-weight: 650;
     }
 
-    .ddl-chip__title {
-      max-width: 158px;
+    .day-ddl-row__title {
+      flex: 1;
+      min-width: 0;
       overflow: hidden;
       color: var(--ink);
-      font-size: 11px;
-      line-height: 1.2;
+      font-size: 10.5px;
       font-weight: 600;
+      line-height: 1.3;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .ddl-empty {
-      height: 100%;
-      display: flex;
-      align-items: center;
+    .day-ddl-row__chevron {
+      flex: none;
+      width: 12px;
+      height: 12px;
+      color: var(--ink-faint);
+    }
+
+    .day-ddl-row__chevron svg {
+      display: block;
+      width: 12px;
+      height: 12px;
+    }
+
+    .day-ddl-empty {
+      margin: 0;
+      padding: 3px 6px 2px;
       color: var(--ink-muted);
-      font-size: 10.5px;
-      white-space: nowrap;
+      font-size: 10px;
+      line-height: 1.4;
     }
 
     .timetable-scroll {
@@ -514,7 +512,7 @@
 
     .app.is-todo .week-row,
     .app.is-todo .date-strip,
-    .app.is-todo .ddl-card {
+    .app.is-todo .day-ddl-panel {
       display: none;
     }
 
@@ -980,85 +978,6 @@
     .schedule-block--short .schedule-block__location,
     .schedule-block--medium .schedule-block__location {
       display: none;
-    }
-
-    .ddl-marker {
-      position: absolute;
-      z-index: 4;
-      left: 2px;
-      right: 2px;
-      height: 34px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1px;
-      overflow: hidden;
-      padding: 2px 4px;
-      border: 1px dashed rgba(169, 80, 52, 0.5);
-      border-left: 2px solid rgba(169, 80, 52, 0.72);
-      border-radius: 8px;
-      background: rgba(255, 250, 241, 0.97);
-      box-shadow: 0 2px 7px rgba(98, 65, 36, 0.08);
-      text-align: left;
-      transition:
-        transform 160ms ease,
-        box-shadow 160ms ease,
-        border-color 160ms ease,
-        background-color 160ms ease;
-      animation: block-in 320ms both;
-      animation-delay: calc(var(--order, 0) * 18ms);
-    }
-
-    .ddl-marker:hover {
-      z-index: 5;
-      transform: translateY(-1px);
-      border-color: rgba(169, 80, 52, 0.68);
-      background: #fffaf1;
-      box-shadow: 0 6px 16px rgba(109, 73, 39, 0.14);
-    }
-
-    .ddl-marker:active {
-      transform: scale(0.985);
-    }
-
-    .ddl-marker--today {
-      border-color: rgba(169, 80, 52, 0.62);
-      border-left-color: var(--accent);
-      background: #fff5e9;
-    }
-
-    .ddl-marker--overdue {
-      border-color: rgba(164, 61, 43, 0.46);
-      border-left-color: var(--overdue);
-      background: var(--overdue-bg);
-    }
-
-    .ddl-marker__time {
-      overflow: hidden;
-      color: var(--accent-deep);
-      font-size: 7.5px;
-      font-weight: 720;
-      line-height: 1.1;
-      letter-spacing: 0;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .ddl-marker--overdue .ddl-marker__time {
-      color: var(--overdue);
-    }
-
-    .ddl-marker__title {
-      display: -webkit-box;
-      overflow: hidden;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      font-size: 8.5px;
-      font-weight: 650;
-      line-height: 1.12;
-      letter-spacing: 0.005em;
-      overflow-wrap: anywhere;
     }
 
     .fab {
@@ -1610,6 +1529,17 @@
       }
     }
 
+    @keyframes day-panel-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @media (min-width: 560px) {
       body {
         padding: 24px;
@@ -1646,11 +1576,7 @@
         font-size: 8px;
       }
 
-      .ddl-heading {
-        font-size: 10px;
-      }
-
-      .ddl-card {
+      .day-ddl-panel {
         margin-right: 9px;
         margin-left: 9px;
       }
@@ -1709,21 +1635,14 @@
           <h1 class="week-title"><span>第</span><strong>6</strong><span>周</span></h1>
         </div>
 
-        <div class="date-strip" id="dateStrip" role="list" aria-label="本周日期"></div>
+        <div class="date-strip" id="dateStrip" role="group" aria-label="本周日期，点击查看当天 DDL"></div>
 
-        <section class="ddl-card" aria-labelledby="ddlHeading">
-          <div class="ddl-heading" id="ddlHeading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M9 5h6"></path>
-              <path d="M9 3.5h6a1.5 1.5 0 0 1 1.5 1.5v.5H19a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1h2.5V5A1.5 1.5 0 0 1 9 3.5Z"></path>
-              <path d="m8.3 14 2.2 2.2 4.9-5"></path>
-            </svg>
-            <span>本周 DDL</span>
-            <span class="ddl-count" id="ddlCount">4</span>
+        <section class="day-ddl-panel" id="dayDdlPanel" aria-labelledby="dayDdlTitle" hidden>
+          <div class="day-ddl-panel__head">
+            <h2 class="day-ddl-panel__title" id="dayDdlTitle"></h2>
+            <span class="day-ddl-panel__count" id="dayDdlCount"></span>
           </div>
-          <div class="ddl-scroll-area">
-            <div class="ddl-scroll" id="ddlScroll" aria-label="本周待处理 DDL"></div>
-          </div>
+          <div class="day-ddl-list" id="dayDdlList"></div>
         </section>
       </header>
 
@@ -1759,7 +1678,7 @@
         </div>
       </section>
 
-      <button class="fab" id="addButton" type="button" aria-label="添加日程或 DDL">
+      <button class="fab" id="addButton" type="button" aria-label="添加 DDL" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <path d="M12 5v14"></path>
           <path d="M5 12h14"></path>
@@ -1873,7 +1792,6 @@
     const DEFAULT_DAY_START = 8 * 60;
     const DEFAULT_HOUR_HEIGHT = 44;
     const DEFAULT_BLOCK_GAP = 2;
-    const DEFAULT_DDL_MARKER_HEIGHT = 34;
 
     function roundToHundredth(value) {
       return Math.round(value * 100) / 100;
@@ -2015,46 +1933,6 @@
       return groups;
     }
 
-    function getDdlWeekMarkers(items, weekDates, options = {}) {
-      const dayStartMinutes = options.dayStartMinutes ?? DEFAULT_DAY_START;
-      const dayEndMinutes = options.dayEndMinutes ?? DEFAULT_DAY_END;
-      const hourHeight = options.hourHeight ?? DEFAULT_HOUR_HEIGHT;
-      const markerHeight = options.markerHeight ?? DEFAULT_DDL_MARKER_HEIGHT;
-      const latestTimedMinutes = dayEndMinutes - (markerHeight / hourHeight) * 60;
-      const endStackByDay = new Map();
-      const markers = [];
-
-      [...items].sort(compareDdl).forEach((item) => {
-        const dayIndex = weekDates.indexOf(item.dueDate);
-        if (dayIndex === -1) return;
-
-        const dueTime = item.dueTime ?? '23:59';
-        const minutes = parseTimeToMinutes(dueTime);
-
-        if (minutes >= dayStartMinutes && minutes <= latestTimedMinutes) {
-          markers.push({
-            id: item.id,
-            dayIndex,
-            mode: 'timed',
-            minutes,
-            top: roundToHundredth(((minutes - dayStartMinutes) / 60) * hourHeight),
-          });
-          return;
-        }
-
-        const stackIndex = endStackByDay.get(dayIndex) ?? 0;
-        endStackByDay.set(dayIndex, stackIndex + 1);
-        markers.push({
-          id: item.id,
-          dayIndex,
-          mode: 'end-of-day',
-          minutes,
-          stackIndex,
-        });
-      });
-
-      return markers;
-    }
   </script>
 
   <script>
@@ -2064,9 +1942,6 @@
       const HOUR_HEIGHT = 44;
       const DAY_START_HOUR = 8;
       const DAY_END_HOUR = 21;
-      const DDL_MARKER_HEIGHT = 34;
-      const DDL_MARKER_GAP = 4;
-      const DDL_MARKER_BOTTOM = 4;
       const MOCK_WEEK = [
         { iso: '2026-10-19', monthDay: '10/19', weekday: '周一', isToday: true },
         { iso: '2026-10-20', monthDay: '10/20', weekday: '周二', isToday: false },
@@ -2145,9 +2020,10 @@
       const weekDays = document.getElementById('weekDays');
       const timeRail = document.getElementById('timeRail');
       const gridLines = document.getElementById('gridLines');
-      const ddlScroll = document.getElementById('ddlScroll');
-      const ddlCount = document.getElementById('ddlCount');
-      const ddlHeading = document.getElementById('ddlHeading');
+      const dayDdlPanel = document.getElementById('dayDdlPanel');
+      const dayDdlTitle = document.getElementById('dayDdlTitle');
+      const dayDdlCount = document.getElementById('dayDdlCount');
+      const dayDdlList = document.getElementById('dayDdlList');
       const todoBadge = document.getElementById('todoBadge');
       const timetableScroll = document.getElementById('timetableScroll');
       const todoView = document.getElementById('todoView');
@@ -2200,6 +2076,7 @@
       let formDayIndex = TODAY_INDEX;
       let gridPointerStart = null;
       let activeView = 'schedule';
+      let expandedDayIso = null;
 
       const FORM_TYPES = {
         event: { title: '新建日程', submit: '添加日程' },
@@ -2260,16 +2137,18 @@
         dateStrip.replaceChildren(spacer);
 
         MOCK_WEEK.forEach((day) => {
-          const cell = createElement('div', 'day-cell');
+          const cell = createElement('button', 'day-cell');
           const date = createElement('span', 'day-date', day.monthDay);
           const weekday = createElement('span', 'day-weekday', day.weekday);
           const badge = createElement('span', 'day-ddl-badge');
           badge.hidden = true;
           badge.setAttribute('aria-hidden', 'true');
 
+          cell.type = 'button';
           cell.dataset.date = day.iso;
           cell.dataset.weekday = day.weekday;
-          cell.setAttribute('role', 'listitem');
+          cell.setAttribute('aria-expanded', 'false');
+          cell.setAttribute('aria-controls', 'dayDdlPanel');
           cell.append(date, weekday, badge);
           if (day.isToday) {
             cell.classList.add('is-today');
@@ -2285,14 +2164,71 @@
           const badge = cell.querySelector('.day-ddl-badge');
           const dueCount = ddlItems.filter((item) => item.dueDate === day.iso).length;
           const dueStatus = dueCount ? getDdlStatus(day.iso, today.iso) : '';
+          const expanded = day.iso === expandedDayIso;
           const labels = [day.monthDay, day.weekday];
           if (day.isToday) labels.push('今天');
           if (dueCount) labels.push(`${dueCount} 个 DDL`);
+          labels.push(expanded ? '收起当天 DDL' : '查看当天 DDL');
           cell.setAttribute('aria-label', labels.join('，'));
           cell.classList.toggle('has-overdue-ddl', dueStatus === 'overdue');
+          cell.classList.toggle('is-expanded', expanded);
+          cell.setAttribute('aria-expanded', String(expanded));
           badge.textContent = String(dueCount);
           badge.hidden = dueCount === 0;
         });
+      }
+
+      function renderDayDdlPanel() {
+        const day = MOCK_WEEK.find((entry) => entry.iso === expandedDayIso);
+        if (!day) {
+          dayDdlPanel.hidden = true;
+          return;
+        }
+
+        const items = ddlItems
+          .filter((item) => item.dueDate === day.iso)
+          .slice()
+          .sort(compareDdl);
+
+        dayDdlTitle.textContent = `${day.weekday} · ${day.monthDay}`;
+        dayDdlCount.textContent = String(items.length);
+        dayDdlCount.hidden = items.length === 0;
+        dayDdlCount.setAttribute('aria-label', `${items.length} 个 DDL`);
+        dayDdlList.replaceChildren();
+
+        if (!items.length) {
+          dayDdlList.append(
+            createElement('p', 'day-ddl-empty', `${day.weekday}没有 DDL，轻松一点。`),
+          );
+        } else {
+          items.forEach((item) => {
+            const row = createElement('button', `day-ddl-row day-ddl-row--${item.status}`);
+            const dot = createElement('span', 'day-ddl-row__dot');
+            const time = createElement('span', 'day-ddl-row__time', item.dueTime ?? '23:59');
+            const title = createElement('span', 'day-ddl-row__title', item.title);
+            const chevron = createElement('span', 'day-ddl-row__chevron');
+
+            dot.setAttribute('aria-hidden', 'true');
+            chevron.setAttribute('aria-hidden', 'true');
+            chevron.innerHTML = TODO_CHEVRON_ICON;
+            row.type = 'button';
+            row.dataset.dayDdlId = item.id;
+            row.setAttribute(
+              'aria-label',
+              `${item.title}，${item.meta}，打开 DDL 详情`,
+            );
+            row.append(dot, time, title, chevron);
+            dayDdlList.append(row);
+          });
+        }
+
+        dayDdlPanel.hidden = false;
+      }
+
+      function toggleDayDdlPanel(iso) {
+        expandedDayIso = expandedDayIso === iso ? null : iso;
+        renderDayDdlPanel();
+        updateDayLabels();
       }
 
       function renderTimeRail() {
@@ -2369,95 +2305,15 @@
         });
       }
 
-      function renderDdlMarkers() {
-        const columns = [...weekDays.querySelectorAll('.day-column')];
-        columns.forEach((column) => {
-          column.querySelectorAll('.ddl-marker').forEach((marker) => marker.remove());
-        });
-
-        const markers = getDdlWeekMarkers(
-          ddlItems,
-          MOCK_WEEK.map((day) => day.iso),
-          {
-            dayStartMinutes: DAY_START_HOUR * 60,
-            dayEndMinutes: DAY_END_HOUR * 60,
-            hourHeight: HOUR_HEIGHT,
-            markerHeight: DDL_MARKER_HEIGHT,
-          },
-        );
-
-        markers.forEach((marker, index) => {
-          const item = ddlItems.find((entry) => entry.id === marker.id);
-          if (!item) return;
-
-          const dueTime = item.dueTime ?? '23:59';
-          const button = createElement('button', `ddl-marker ddl-marker--${marker.mode}`);
-          const time = createElement('span', 'ddl-marker__time', `${dueTime} 截止`);
-          const title = createElement('span', 'ddl-marker__title', item.title);
-
-          if (item.status === 'overdue') button.classList.add('ddl-marker--overdue');
-          if (item.status === 'today') button.classList.add('ddl-marker--today');
-          button.type = 'button';
-          button.dataset.gridDdlId = item.id;
-          button.style.setProperty('--order', String(index));
-          button.setAttribute(
-            'aria-label',
-            `DDL：${item.title}，${formatDueLabel(item.dueDate, dueTime)}。打开详情`,
-          );
-          button.title = `${item.title} · 截止 ${dueTime}`;
-
-          if (marker.mode === 'timed') {
-            button.style.top = `${marker.top}px`;
-          } else {
-            const offset = DDL_MARKER_BOTTOM
-              + marker.stackIndex * (DDL_MARKER_HEIGHT + DDL_MARKER_GAP);
-            button.style.bottom = `${offset}px`;
-          }
-
-          button.append(time, title);
-          columns[marker.dayIndex].append(button);
-        });
-      }
-
       function renderDdl() {
         const count = ddlItems.length;
-        ddlCount.textContent = String(count);
-        ddlCount.hidden = count === 0;
-        ddlHeading.setAttribute('aria-label', `本周 DDL，${count} 项待处理`);
-
         todoBadge.textContent = String(count);
         todoBadge.hidden = count === 0;
         const todoTab = document.querySelector('[data-tab="todo"]');
         todoTab.setAttribute('aria-label', count ? `待办，${count} 项未完成` : '待办');
 
-        ddlScroll.replaceChildren();
-        if (count === 0) {
-          ddlScroll.append(createElement('span', 'ddl-empty', '已清空，去享受一个下午吧。'));
-          updateDayLabels();
-          renderDdlMarkers();
-          renderTodo();
-          return;
-        }
-
-        ddlItems.forEach((item) => {
-          const chip = createElement('button', `ddl-chip ddl-chip--${item.status}`);
-          const dot = createElement('span', 'ddl-chip__dot');
-          const copy = createElement('span', 'ddl-chip__copy');
-          const meta = createElement('span', 'ddl-chip__meta', item.meta);
-          const title = createElement('span', 'ddl-chip__title', item.title);
-
-          dot.setAttribute('aria-hidden', 'true');
-          chip.type = 'button';
-          chip.dataset.ddlId = item.id;
-          chip.setAttribute('aria-label', `${item.meta}，${item.title}。打开 DDL 详情`);
-          copy.append(meta, title);
-          chip.append(dot, copy);
-          chip.addEventListener('click', () => openDdlSheet(item.id));
-          ddlScroll.append(chip);
-        });
-
         updateDayLabels();
-        renderDdlMarkers();
+        renderDayDdlPanel();
         renderTodo();
       }
 
@@ -2749,7 +2605,11 @@
             && formLastFocused !== document.body
             && formLastFocused.isConnected
             ? formLastFocused
-            : addButton;
+            : activeView === 'todo'
+              ? addButton
+              : dateStrip.querySelector('.day-cell.is-expanded')
+                ?? dateStrip.querySelector('.day-cell.is-today')
+                ?? dateStrip.querySelector('.day-cell');
           target?.focus({ preventScroll: true });
           formLastFocused = null;
           const callback = formCloseAfterTransition;
@@ -2791,9 +2651,15 @@
           renderDdl();
           closeFormSheet(() => {
             showToast(`已添加 DDL「${title}」`);
-            const target = activeView === 'todo'
-              ? todoGroups.querySelector(`[data-ddl-id="${item.id}"]`)
-              : ddlScroll.querySelector(`[data-ddl-id="${item.id}"]`);
+            let target;
+            if (activeView === 'todo') {
+              target = todoGroups.querySelector(`[data-ddl-id="${item.id}"]`);
+            } else {
+              expandedDayIso = item.dueDate;
+              renderDayDdlPanel();
+              updateDayLabels();
+              target = dayDdlPanel.querySelector(`[data-day-ddl-id="${item.id}"]`);
+            }
             target?.scrollIntoView({
               behavior: reduceMotion.matches ? 'auto' : 'smooth',
               inline: 'nearest',
@@ -2838,7 +2704,6 @@
 
         scheduleBlocks.push(block);
         renderScheduleBlocks();
-        renderDdlMarkers();
         closeFormSheet(() => {
           showToast(`已添加「${title}」`);
           const element = weekDays.querySelector(`[data-block-id="${block.id}"]`);
@@ -2934,7 +2799,7 @@
         timetableScroll.hidden = isTodo;
         todoView.hidden = !isTodo;
         document.title = isTodo ? '小排 · 待办' : '小排 · 第 6 周';
-        addButton.setAttribute('aria-label', isTodo ? '添加 DDL' : '添加日程或 DDL');
+        addButton.hidden = !isTodo;
         syncTabState();
         if (isTodo) renderTodo();
       }
@@ -2954,6 +2819,16 @@
         openFormSheet({ type: 'ddl', dayIndex: TODAY_INDEX });
       });
 
+      dateStrip.addEventListener('click', (event) => {
+        const cell = event.target.closest('.day-cell');
+        if (cell) toggleDayDdlPanel(cell.dataset.date);
+      });
+
+      dayDdlList.addEventListener('click', (event) => {
+        const row = event.target.closest('[data-day-ddl-id]');
+        if (row) openDdlSheet(row.dataset.dayDdlId);
+      });
+
       weekDays.addEventListener('pointerdown', (event) => {
         gridPointerStart = { x: event.clientX, y: event.clientY };
       });
@@ -2961,12 +2836,6 @@
       weekDays.addEventListener('click', (event) => {
         const pointerStart = gridPointerStart;
         gridPointerStart = null;
-
-        const ddlMarker = event.target.closest('.ddl-marker');
-        if (ddlMarker) {
-          openDdlSheet(ddlMarker.dataset.gridDdlId);
-          return;
-        }
 
         const blockButton = event.target.closest('.schedule-block');
         if (blockButton) {
@@ -3007,10 +2876,7 @@
       });
 
       addButton.addEventListener('click', () => {
-        openFormSheet({
-          type: activeView === 'todo' ? 'ddl' : 'event',
-          dayIndex: TODAY_INDEX,
-        });
+        openFormSheet({ type: 'ddl', dayIndex: TODAY_INDEX });
       });
 
       formTypes.addEventListener('click', (event) => {
